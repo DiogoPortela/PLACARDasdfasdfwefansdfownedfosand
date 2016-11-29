@@ -13,6 +13,6 @@ typedef struct
 
 int main()
 {
-
+	int fixit;
 	return 0;
 }
