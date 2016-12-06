@@ -56,7 +56,7 @@ modalidade escolhemodalidade()
 
 
 //A PERCISAR DE REWORK
-void criajogo(modalidade mod, clube casa, clube fora)
+void criajogo(modalidade mod, clube casa, clube fora) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
 {
 	FILE *fd;
 	clube aux1, aux2;

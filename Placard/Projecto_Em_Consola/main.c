@@ -31,6 +31,29 @@ int ResultadoRandom(clube a, int max)
 	return pontos;
 }
 
+void AtribuiResultado(clube a, clube b)
+{
+	FILE *fd;
+	fd = fopen("jogosfutebol.txt", "r");
+
+	clube aux1, aux2;
+	int agolos, bgolos;
+	while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+	{
+		if (strcmp(aux1.nome, a.nome) && strcmp(aux2.nome, b.nome))
+		{
+			fclose(fd);
+			fd = fopen("resultados.txt", "a");
+			agolos = ResultadoRandom(a, 4);
+			bgolos = ResultadoRandom(a, 4);
+			fprintf("%s %d - %d %s", a.nome, agolos, bgolos, b.nome);
+
+		}
+	}
+
+
+}
+
 
 
 int main(void) //Menu
