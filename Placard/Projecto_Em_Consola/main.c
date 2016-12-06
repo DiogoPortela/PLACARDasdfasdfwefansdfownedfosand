@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#define n  10
+#define n  18
 #define _CRT_SECURE_NO_WARNINGS
 
 /*TODO:
@@ -20,24 +20,50 @@ typedef struct
 }modalidade;
 
 /*converte a string para o tipo modalidade | sera que isto e necessario?*/
-modalidade escolhemodalidade(char modalidade_introduzida[])
+
+void TestaFicheiro(char nomeficheiro[]) //testa se determinado ficheiro existe
+{
+	FILE *fd;
+	fd = fopen(nomeficheiro, "r");
+	if (fd == NULL)
+	{
+		printf("\nFICHEIRO %s NAO ENCONTRADO!", nomeficheiro);
+	}
+}
+modalidade escolhemodalidade()
 {
 	FILE *fd;
 	fd = fopen("modalidades.txt", "r");
 	modalidade modaux;
-	if (fd == NULL)
+	char modalidade_introduzida[20] = "";
+	char opcao = 0;
+	do
 	{
-		printf("\nFICHEIRO NAO ENCONTRADO!");
-	}
-	else
-	{
-		while (fscanf("%s\n", modaux.nome) != EOF)
-			if (strcmp(modalidade_introduzida, modaux.nome))
-				return modaux;
-		printf("FICHEIRO LIDO");
-		fclose(fd);
-	}
-	return modaux; //este return deve ser do tipo nulo, para podermos verificar mais tarde no programa se a modalidade e valida ou n.
+		printf("MODALIDADE DA APOSTA:\n");
+		printf("\t1- FUTEBOL\n");
+		printf("\t2- BASQUETEBOL\n");
+		printf("\t3- TENIS\n");
+		printf("\t0- VOLTAR ATRAS\n");
+		scanf("%c", opcao);
+		switch (opcao)
+		{
+		case 1:
+			*modalidade_introduzida = "FUTEBOL";
+			break;
+		case 2:
+			*modalidade_introduzida = "BASQUETEBOL";
+			break;
+		case 3:
+			*modalidade_introduzida = "TENIS";
+			break;
+		default:
+			printf("SELECIONE UMA DAS OPCOES!");
+			break;
+		}
+	} while ((fscanf("%s\n", modaux.nome) != EOF) && (!strcmp(modalidade_introduzida, modaux.nome) && opcao != 0));
+
+	return modaux;
+	fclose(fd);
 }
 
 void criajogo(modalidade mod, clube casa, clube fora)
@@ -112,65 +138,39 @@ void criajogo(modalidade mod, clube casa, clube fora)
 	}
 }
 
-	int main(void)
+int main(void)
+{
+	int tecla_menu, nrmod;
+	char mod[20];
+	do
 	{
-		int tecla_menu, nrmod;
-		char mod[20];
-		do
-		{
-			printf("OPCAO:\n");
-			printf("\t1- VER O SEU SALDO\n");
-			printf("\t2- JOGAR\n");
-			printf("\t3- LISTAR\n");
-			printf("\t4- ALTERAR DEFINICOES\n");
-			printf("\t5- GRAVAR\n");
-			printf("\t0- SAIR\n");
-			scanf("%d", tecla_menu);
+		printf("OPCAO:\n");
+		printf("\t1- VER O SEU SALDO\n");
+		printf("\t2- JOGAR\n");
+		printf("\t3- LISTAR\n");
+		printf("\t4- ALTERAR DEFINICOES\n");
+		printf("\t5- GRAVAR\n");
+		printf("\t0- SAIR\n");
+		scanf("%d", tecla_menu);
 
-			switch (tecla_menu)
-			{
-			case 1:	//esta no sitio do saldo temporariamente para ser mais facil de testar
-					//sera posto na parte do codigo em que o utilizador insere a modalidade da aposta
-					//em principio sera na opcao 2 e 3, onde me parece que sera preciso pedir a mod ao utilizador
-				do
-				{
-					printf("MODALIDADE DA APOSTA:\n");
-					printf("\t1- FUTEBOL\n");
-					printf("\t2- BASQUETEBOL\n");
-					printf("\t3- TENIS\n");
-					printf("\t0- VOLTAR ATRAS\n");
-					scanf("%d", nrmod);
-					switch (nrmod)
-					{
-					case 1:
-						mod[20] = "FUTEBOL";
-						escolhemodalidade(mod[20]);
-						break;
-					case 2:
-						mod[20] = "BASQUETEBOL";
-						escolhemodalidade(mod[20]);
-						break;
-					case 3:
-						mod[20] = "TENIS";
-						escolhemodalidade(mod[20]);
-						break;
-					default:
-						printf("SELECIONE UMA DAS OPCOES!");
-						break;
-					}
-				} while (nrmod != 0);
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-			case 4:
-				break;
-			case 5:
-				break;
-			default:
-				break;
-			}
-		} while (tecla_menu != 0);
-		return 0;
-	}
+		switch (tecla_menu)
+		{
+		case 1:	//esta no sitio do saldo temporariamente para ser mais facil de testar
+				//sera posto na parte do codigo em que o utilizador insere a modalidade da aposta
+				//em principio sera na opcao 2 e 3, onde me parece que sera preciso pedir a mod ao utilizador
+			escolhemodalidade();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		default:
+			break;
+		}
+	} while (tecla_menu != 0);
+	return 0;
+}
