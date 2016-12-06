@@ -1,23 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#define n  18
+#include "PlacardStructs.h"
 #define _CRT_SECURE_NO_WARNINGS
 
 /*TODO:
 Acabar escolhemodalidade conforme os comments na funcao
 */
 
-typedef	struct
-{
-	char nome[60];
-
-}clube;
-
-typedef struct
-{
-	char nome[60];
-	clube clubes[n];
-}modalidade;
 
 /*converte a string para o tipo modalidade | sera que isto e necessario?*/
 
