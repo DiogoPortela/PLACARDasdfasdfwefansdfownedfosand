@@ -1,19 +1,34 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #include "PlacardStructs.h"
 #include "PlacardFunctions.h"
 
 
-float ValorRandomComBaseNaProb(double probabilidade)
+int ValorRandomComBaseNaProb(clube a, int max)
 {
-	int maxrand = 10;
-	return (rand() / (double)maxrand) < probabilidade;
+	srand(time(NULL));
+	int pontos = 0;
+	for (int i = 0; i < max; i++)
+	{
+		pontos += rand() < a.probabilidade * ((float)RAND_MAX + 1.0);
+		printf("%d\n", pontos);
+	}
+	return pontos;
 }
 
-void ResultadoRandom(clube a, clube b)
+int ResultadoRandom(clube a, int max)
 {
-	
+	srand(time(NULL));
+	int pontos = 0;
+	for (int i = 0; i < max; i++)
+	{
+		pontos += rand() % 2;
+		printf("%d\n", pontos);
+	}
+	return pontos;
 }
 
 
@@ -22,6 +37,8 @@ int main(void) //Menu
 {
 	char tecla_menu = 0;
 	modalidade modaux;
+	int pontos, pontos2;
+	clube x;
 	do
 	{
 		printf("1- VER O SEU SALDO\n");
@@ -35,9 +52,11 @@ int main(void) //Menu
 
 		switch (tecla_menu)
 		{
-		case 1:	//esta no sitio do saldo temporariamente para ser mais facil de testar
-				//sera posto na parte do codigo em que o utilizador insere a modalidade da aposta
-				//em principio sera na opcao 2 e 3, onde me parece que sera preciso pedir a mod ao utilizador			
+		case 1:	
+			*x.nome = "BENFICA";
+			x.probabilidade = 0.7;
+			pontos = ResultadoRandom(x, 10);
+			pontos2 = ValorRandomComBaseNaProb(x, 10);
 			break;
 		case 2:
 			modaux = escolhemodalidade();

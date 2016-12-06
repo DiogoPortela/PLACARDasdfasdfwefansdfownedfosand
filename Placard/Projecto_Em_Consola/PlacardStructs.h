@@ -4,6 +4,7 @@
 typedef	struct
 {
 	char nome[n];
+	float probabilidade;
 }clube;
 
 typedef struct
