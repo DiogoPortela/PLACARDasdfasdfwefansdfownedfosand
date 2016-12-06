@@ -18,32 +18,32 @@ void ResultadoRandom(clube a, clube b)
 
 
 
-
 int main(void) //Menu
 {
-	int tecla_menu, nrmod;
-	char mod[20];
+	char tecla_menu = 0;
+	modalidade modaux;
 	do
 	{
-		printf("OPCAO:\n");
-		printf("\t1- VER O SEU SALDO\n");
-		printf("\t2- JOGAR\n");
-		printf("\t3- LISTAR\n");
-		printf("\t4- ALTERAR DEFINICOES\n");
-		printf("\t5- GRAVAR\n");
-		printf("\t0- SAIR\n");
-		scanf("%d", tecla_menu);
+		printf("1- VER O SEU SALDO\n");
+		printf("2- JOGAR\n");
+		printf("3- LISTAR\n");
+		printf("4- ALTERAR DEFINICOES\n");
+		printf("5- GRAVAR\n");
+		printf("0- SAIR\n\n");
+		printf("OPCAO: ");
+		scanf("%d", &tecla_menu);
 
 		switch (tecla_menu)
 		{
 		case 1:	//esta no sitio do saldo temporariamente para ser mais facil de testar
 				//sera posto na parte do codigo em que o utilizador insere a modalidade da aposta
-				//em principio sera na opcao 2 e 3, onde me parece que sera preciso pedir a mod ao utilizador
-			escolhemodalidade();
+				//em principio sera na opcao 2 e 3, onde me parece que sera preciso pedir a mod ao utilizador			
 			break;
 		case 2:
+			modaux = escolhemodalidade();
 			break;
 		case 3:
+			modaux = escolhemodalidade();
 			break;
 		case 4:
 			break;

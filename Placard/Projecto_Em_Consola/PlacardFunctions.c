@@ -23,12 +23,13 @@ modalidade escolhemodalidade()
 
 	do
 	{
+		system("cls");
 		printf("MODALIDADE DA APOSTA:\n");
 		printf("\t1- FUTEBOL\n");
 		printf("\t2- BASQUETEBOL\n");
 		printf("\t3- TENIS\n");
 		printf("\t0- VOLTAR ATRAS\n");
-		scanf("%c", opcao);
+		scanf("%d", &opcao);
 		switch (opcao)
 		{
 		case 1:
