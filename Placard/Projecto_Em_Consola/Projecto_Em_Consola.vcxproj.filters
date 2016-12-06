@@ -18,12 +18,15 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlacardFunctions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlacardStructs.h">
+    <ClInclude Include="PlacardFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlacardFunctions.h">
+    <ClInclude Include="PlacardStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

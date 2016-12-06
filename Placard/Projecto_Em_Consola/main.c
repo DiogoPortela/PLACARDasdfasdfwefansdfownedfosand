@@ -1,8 +1,14 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
 #include "PlacardStructs.h"
 #include "PlacardFunctions.h"
-#define _CRT_SECURE_NO_WARNINGS
+
+void ResultadoRandom(clube a, clube b)
+{
+
+}
+
 
 
 
