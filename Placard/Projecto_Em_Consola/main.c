@@ -4,9 +4,16 @@
 #include "PlacardStructs.h"
 #include "PlacardFunctions.h"
 
+
+float ValorRandomComBaseNaProb(double probabilidade)
+{
+	int maxrand = 10;
+	return (rand() / (double)maxrand) < probabilidade;
+}
+
 void ResultadoRandom(clube a, clube b)
 {
-
+	
 }
 
 
