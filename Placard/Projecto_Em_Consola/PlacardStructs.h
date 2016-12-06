@@ -12,5 +12,3 @@ typedef struct
 	char nome[60];
 	clube clubes[n];
 }modalidade;
-
-//bb

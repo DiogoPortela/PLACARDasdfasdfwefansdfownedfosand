@@ -23,5 +23,8 @@
     <ClInclude Include="PlacardStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlacardFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
