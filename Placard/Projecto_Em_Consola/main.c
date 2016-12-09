@@ -97,3 +97,8 @@ int main(void) //Menu
 	} while (tecla_menu != 0);
 	return 0;
 }
+
+
+// DO WHILE (FAZER COMPARAÇOES DENTRO DO 'DO')
+// opcao = getch(); adicionado;
+// CUIDADO COM AS PLICAS

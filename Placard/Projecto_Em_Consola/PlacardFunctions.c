@@ -23,29 +23,30 @@ modalidade escolhemodalidade()
 
 	do
 	{
-		system("cls");
+		//system("cls");
 		printf("MODALIDADE DA APOSTA:\n");
 		printf("\t1- FUTEBOL\n");
 		printf("\t2- BASQUETEBOL\n");
 		printf("\t3- TENIS\n");
 		printf("\t0- VOLTAR ATRAS\n");
-		scanf("%d", &opcao);
+		//fflush(stdin);
+		opcao = getch();
 		switch (opcao)
 		{
-		case 1:
-			*modalidade_introduzida = "FUTEBOL";
+		case '1':
+			strcpy(modalidade_introduzida, "FUTEBOL");
 			break;
-		case 2:
-			*modalidade_introduzida = "BASQUETEBOL";
+		case '2':
+			strcpy(modalidade_introduzida, "BASQUETEBOL");
 			break;
-		case 3:
-			*modalidade_introduzida = "TENIS";
+		case '3':
+			strcpy(modalidade_introduzida, "TENIS");
 			break;
 		default:
-			printf("SELECIONE UMA DAS OPCOES!");
+			printf("SELECIONE UMA DAS OPCOES!\n");
 			break;
 		}
-	} while ((fscanf("%s\n", modaux.nome) != EOF) && (!strcmp(modalidade_introduzida, modaux.nome) && opcao != 0));
+	} while (opcao != '0' && (fscanf(fd, "%s\n", modaux.nome) != EOF) && (!strcmp(modalidade_introduzida, modaux.nome)));
 
 	return modaux;
 	fclose(fd);
