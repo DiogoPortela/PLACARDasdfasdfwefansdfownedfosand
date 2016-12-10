@@ -1,60 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
 #include "PlacardStructs.h"
 #include "PlacardFunctions.h"
-
-
-int ValorRandomComBaseNaProb(clube a, int max)
-{
-	srand(time(NULL));
-	int pontos = 0;
-	for (int i = 0; i < max; i++)
-	{
-		pontos += rand() < a.probabilidade * ((float)RAND_MAX + 1.0);
-		printf("%d\n", pontos);
-	}
-	return pontos;
-}
-
-int ResultadoRandom(clube a, int max)
-{
-	srand(time(NULL));
-	int pontos = 0;
-	for (int i = 0; i < max; i++)
-	{
-		pontos += rand() % 2;
-		printf("%d\n", pontos);
-	}
-	return pontos;
-}
-
-void AtribuiResultado(clube a, clube b)
-{
-	FILE *fd;
-	fd = fopen("jogosfutebol.txt", "r");
-
-	clube aux1, aux2;
-	int agolos, bgolos;
-	while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
-	{
-		if (strcmp(aux1.nome, a.nome) && strcmp(aux2.nome, b.nome))
-		{
-			fclose(fd);
-			fd = fopen("resultados.txt", "a");
-			agolos = ResultadoRandom(a, 4);
-			bgolos = ResultadoRandom(a, 4);
-			fprintf("%s %d - %d %s", a.nome, agolos, bgolos, b.nome);
-
-		}
-	}
-
-
-}
-
-
 
 int main(void) //Menu
 {
@@ -82,10 +27,10 @@ int main(void) //Menu
 			pontos2 = ValorRandomComBaseNaProb(x, 10);
 			break;
 		case 2:
-			modaux = escolhemodalidade();
+			modaux = EscolheModalidade();
 			break;
 		case 3:
-			modaux = escolhemodalidade();
+			modaux = EscolheModalidade();
 			break;
 		case 4:
 			break;
@@ -97,8 +42,3 @@ int main(void) //Menu
 	} while (tecla_menu != 0);
 	return 0;
 }
-
-
-// DO WHILE (FAZER COMPARAÇOES DENTRO DO 'DO')
-// opcao = getch(); adicionado;
-// CUIDADO COM AS PLICAS
