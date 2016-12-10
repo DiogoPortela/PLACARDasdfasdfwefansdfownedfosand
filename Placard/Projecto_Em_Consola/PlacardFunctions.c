@@ -1,11 +1,50 @@
 #include "PlacardStructs.h"
 
-
 //PRONTAS
-int TestaFicheiro(char nomeficheiro[]) //testa se determinado ficheiro existe
+void AtribuiResultado(clube a, clube b)
 {
 	FILE *fd;
+	clube aux1, aux2;
+	int agolos, bgolos;
+
+	fd = fopen("jogosfutebol.txt", "r");
+
+	while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+	{
+		if (strcmp(aux1.nome, a.nome) && strcmp(aux2.nome, b.nome))
+		{
+			fclose(fd);
+			fd = fopen("resultados.txt", "a");
+			agolos = ResultadoRandom(a, 4);
+			bgolos = ResultadoRandom(a, 4);
+			fprintf("%s %d - %d %s", a.nome, agolos, bgolos, b.nome);
+		}
+	}
+}
+int FicheiroLinhas(char nomeficheiro[])
+{
+	FILE *fd;
+	int linhas = 1, letra;
+
 	fd = fopen(nomeficheiro, "r");
+
+	do
+	{
+		letra = fgetc(fd);
+		if (letra == '\n')
+		{
+			linhas++;
+		}
+	} while (letra != EOF);
+	fclose(fd);
+	return linhas;
+}
+int FicheiroExiste(char nomeficheiro[]) //testa se determinado ficheiro existe
+{
+	FILE *fd;
+
+	fd = fopen(nomeficheiro, "r");
+
 	if (fd == NULL)
 	{
 		printf("\nFICHEIRO %s NAO ENCONTRADO!\n\n", nomeficheiro);
@@ -13,16 +52,54 @@ int TestaFicheiro(char nomeficheiro[]) //testa se determinado ficheiro existe
 	}
 	return 1;
 }
-int ValorRandomComBaseNaProb(clube a, int max)
+void FicheiroImprimir(char nomeficheiro[])
 {
-	srand(time(NULL));
-	int pontos = 0;
-	for (int i = 0; i < max; i++)
+	FILE *fd;
+	char textoImprimir[60];
+	fd = fopen(nomeficheiro, "r");
+	if (FicheiroExiste(nomeficheiro))
 	{
-		pontos += rand() < a.probabilidade * ((float)RAND_MAX + 1.0);
-		printf("%d\n", pontos);
+		for (int i = 0; i < FicheiroLinhas(nomeficheiro); i++)
+		{
+			fscanf(fd, "%s", textoImprimir);
+			printf("\n %s \n", textoImprimir);
+		}
 	}
-	return pontos;
+}
+void ListarTudo()
+{
+	char opcao = 0, ficheiroAbrir[60], textoImprimir[60];
+	FILE *fd;
+	
+	do
+	{
+		printf("-----------------------\n");
+		printf("\t1- LISTAR MODALIDADES.\n");
+		printf("\t2- LISTAR JOGOS.\n");
+		printf("\t3- LISTAR RESULTADOS.\n");
+		printf("\t0- SAIR.\n");
+		printf("OPCAO: ");
+		scanf("%c", &opcao);
+		while (getchar() != '\n');
+
+		switch (opcao)
+		{
+		case '1':
+			FicheiroImprimir("modalidades.txt");
+			break;
+		case '2':
+			FicheiroImprimir("jogos.txt");
+			break;
+		case '3':
+			FicheiroImprimir("resultados.txt");
+			break;
+		case '0':
+			break;
+		default:
+			printf("\nALGO DEU ERRO. \n");
+			break;
+		}
+	} while (opcao != '0');
 }
 int ResultadoRandom(clube a, int max)
 {
@@ -35,82 +112,76 @@ int ResultadoRandom(clube a, int max)
 	}
 	return pontos;
 }
-void AtribuiResultado(clube a, clube b)
+int ValorRandomComBaseNaProb(clube a, int max)
 {
-	FILE *fd;
-	fd = fopen("jogosfutebol.txt", "r");
-
-	clube aux1, aux2;
-	int agolos, bgolos;
-	while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+	srand(time(NULL));
+	int pontos = 0;
+	for (int i = 0; i < max; i++)
 	{
-		if (strcmp(aux1.nome, a.nome) && strcmp(aux2.nome, b.nome))
-		{
-			fclose(fd);
-			fd = fopen("resultados.txt", "a");
-			agolos = ResultadoRandom(a, 4);
-			bgolos = ResultadoRandom(a, 4);
-			fprintf("%s %d - %d %s", a.nome, agolos, bgolos, b.nome);
-
-		}
+		pontos += rand() < a.probabilidade * ((float)RAND_MAX + 1.0);
+		printf("%d\n", pontos);
 	}
-
-
+	return pontos;
 }
 
 
 
-
 //A PERCISAR DE REWORK
+
 modalidade EscolheModalidade()
 {
-	char modalidade_introduzida[20] = "", opcao = 0, aux = 1;
+	char modalidade_introduzida[20] = "", opcao = 0;
 	modalidade modaux;
 	FILE *fd;
 
 	fd = fopen("modalidades.txt", "r");
-	if (TestaFicheiro("modalidades.txt"))
+	if (FicheiroExiste("modalidades.txt"))
 	{
 		do
 		{
-			system("cls");
+			printf("-----------------------\n");
 			printf("MODALIDADE DA APOSTA:\n");
 			// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
-			//for(int i = 0; i < NUMERO DE LINHAS EXISTENTES NO FICHEIRO; i++)
+			/*for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
+			{
+				printf("\t%d- %s\n", i + 1,)
+			}*/
 
 			printf("\t1- FUTEBOL\n");
 			printf("\t2- BASQUETEBOL\n");
 			printf("\t3- TENIS\n");
 			printf("\t0- VOLTAR ATRAS\n");
 			printf("OPCAO: ");
-			scanf("%d", &opcao);
-			//opcao = getch(opcao);    ISTO AINDA NAO ESTA CORRECTO
+			scanf("%c", &opcao);
+			while (getchar() != '\n');
 
 			switch (opcao)
 			{
-			case 1:
+			case '1':
 				strcpy(modalidade_introduzida, "FUTEBOL");
 				break;
-			case 2:
+			case '2':
 				strcpy(modalidade_introduzida, "BASQUETEBOL");
 				break;
-			case 3:
+			case '3':
 				strcpy(modalidade_introduzida, "TENIS");
 				break;
-			case 0:
+			case '0':
 				break;
 			default:
-				printf("SELECIONE UMA DAS OPCOES!\n");
+				printf("\nERRO: SELECIONE UMA DAS OPCOES!\n");
 				break;
 			}
+			for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
+			{
 
-		} while (opcao != 0 && (fscanf(fd, "%s\n", &modaux.nome) != EOF) && (strcmp(modalidade_introduzida, modaux.nome) != 0));
+			}
+		} while (opcao != '0' && (fscanf(fd, "%s\n", &modaux.nome) != EOF) && (strcmp(modalidade_introduzida, modaux.nome) != 0));
 		fclose(fd);
 	}
 	return modaux;
 }
-
-void criajogo(modalidade mod, clube casa, clube fora) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
+void CriaJogo(modalidade mod, clube casa, clube fora) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
 {
 	FILE *fd;
 	clube aux1, aux2;
