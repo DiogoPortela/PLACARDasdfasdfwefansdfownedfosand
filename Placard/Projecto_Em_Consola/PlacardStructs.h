@@ -4,22 +4,27 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define n 60
+#define Numero 60
 
 typedef	struct
 {
-	char nome[n];
+	char nome[Numero];
 	float probabilidade;
 }clube;
 
 typedef struct
 {
-	char nome[n];
-	clube clubes[n];
+	char nome[Numero];
+	clube clubes[Numero];
 }evento;
 
 typedef struct
 {
-	char nome[n];
-	clube evento[n];
+	char nome[Numero];
+	clube evento[Numero];
 }modalidade;
+
+typedef struct
+{
+	char text[Numero];
+}string;

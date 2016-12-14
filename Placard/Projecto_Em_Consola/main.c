@@ -4,9 +4,14 @@
 int main(void) //Menu
 {
 	char tecla_menu = 0;
-	modalidade modaux;
+	modalidade modaux, modalidades[10];
 	int pontos, pontos2;
 	clube x;
+
+	FicheiroLeModalidades(modalidades);
+	//Ler Clubes
+	//Ler Resultados
+
 	do
 	{
 		printf("-----------------------\n");
@@ -29,7 +34,7 @@ int main(void) //Menu
 			pontos2 = ValorRandomComBaseNaProb(x, 10);
 			break;
 		case '2':
-			modaux = EscolheModalidade();
+			modaux = EscolheModalidade(modalidades);
 			break;
 		case '3':
 			ListarTudo();

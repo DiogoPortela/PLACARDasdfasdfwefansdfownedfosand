@@ -21,6 +21,42 @@ void AtribuiResultado(clube a, clube b)
 		}
 	}
 }
+int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado ficheiro existe
+{
+	*fd = fopen(nomeficheiro, "r");
+
+	if (*fd == NULL)
+	{
+		printf("\nFICHEIRO %s NAO ENCONTRADO!\n\n", nomeficheiro);
+		return 0;
+	}
+	return 1;
+}
+void FicheiroImprimir(char nomeficheiro[])
+{
+	FILE *fd;
+	char textoImprimir[60];
+	fd = fopen(nomeficheiro, "r");
+	for (int i = 0; i < FicheiroLinhas(nomeficheiro); i++)
+	{
+		fscanf(fd, "%s", textoImprimir);
+		printf("\n %s \n", textoImprimir);
+	}
+}
+void FicheiroLeModalidades(modalidade *mod)
+{
+	int numeroDeModalidades;
+	FILE *fd;
+
+	if (FicheiroExiste("modalidades.txt", &fd))
+	{
+		numeroDeModalidades = FicheiroLinhas("modalidades.txt");
+		for (int i = 0; i < numeroDeModalidades; i++)
+		{
+			fscanf(fd, "%s", &mod[i].nome);
+		}
+	}
+}
 int FicheiroLinhas(char nomeficheiro[])
 {
 	FILE *fd;
@@ -39,37 +75,9 @@ int FicheiroLinhas(char nomeficheiro[])
 	fclose(fd);
 	return linhas;
 }
-int FicheiroExiste(char nomeficheiro[]) //testa se determinado ficheiro existe
-{
-	FILE *fd;
-
-	fd = fopen(nomeficheiro, "r");
-
-	if (fd == NULL)
-	{
-		printf("\nFICHEIRO %s NAO ENCONTRADO!\n\n", nomeficheiro);
-		return 0;
-	}
-	return 1;
-}
-void FicheiroImprimir(char nomeficheiro[])
-{
-	FILE *fd;
-	char textoImprimir[60];
-	fd = fopen(nomeficheiro, "r");
-	if (FicheiroExiste(nomeficheiro))
-	{
-		for (int i = 0; i < FicheiroLinhas(nomeficheiro); i++)
-		{
-			fscanf(fd, "%s", textoImprimir);
-			printf("\n %s \n", textoImprimir);
-		}
-	}
-}
 void ListarTudo()
 {
 	char opcao = 0, ficheiroAbrir[60], textoImprimir[60];
-	FILE *fd;
 	
 	do
 	{
@@ -128,33 +136,32 @@ int ValorRandomComBaseNaProb(clube a, int max)
 
 //A PERCISAR DE REWORK
 
-modalidade EscolheModalidade()
+modalidade EscolheModalidade(modalidade *mod)
 {
 	char modalidade_introduzida[20] = "", opcao = 0;
 	modalidade modaux;
 	FILE *fd;
 
-	fd = fopen("modalidades.txt", "r");
-	if (FicheiroExiste("modalidades.txt"))
+	if (FicheiroExiste("modalidades.txt", &fd))
 	{
 		do
 		{
 			printf("-----------------------\n");
 			printf("MODALIDADE DA APOSTA:\n");
-			// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
-			/*for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
-			{
-				printf("\t%d- %s\n", i + 1,)
-			}*/
 
-			printf("\t1- FUTEBOL\n");
-			printf("\t2- BASQUETEBOL\n");
-			printf("\t3- TENIS\n");
+			// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
+			for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
+			{
+				printf("\t%d- %s\n", i + 1, mod[i].nome);
+			}
+
 			printf("\t0- VOLTAR ATRAS\n");
 			printf("OPCAO: ");
 			scanf("%c", &opcao);
 			while (getchar() != '\n');
 
+
+			// USAR UM LOOP PARA IMPRIMIR TODOS AS MODALIDADES
 			switch (opcao)
 			{
 			case '1':
