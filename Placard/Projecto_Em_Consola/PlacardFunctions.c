@@ -10,13 +10,14 @@ void AtribuiResultado(modalidade m, int a, int b)
 	int apontos, bpontos;
 	clube aux1, aux2;
 
-	while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+	while (fscanf(fread, "%*d- %s - %s\n", aux1.nome, aux2.nome) != EOF)
 	{
-		if (strcmp(aux1.nome, m.clube[a].nome) && strcmp(aux2.nome, m.clube[b].nome))
+		if (!strcmp(aux1.nome, m.clube[a].nome) && !strcmp(aux2.nome, m.clube[b].nome))
 		{
+			srand(time(NULL));
 			apontos = ResultadoRandom(m.clube[a], m.maxpts);
 			bpontos = ResultadoRandom(m.clube[b], m.maxpts);
-			fprintf("%s %d - %d %s", m.clube[a].nome, apontos, bpontos, m.clube[b].nome);
+			fprintf(fwrite, "%d- %s %d - %d %s\n", m.identificador, m.clube[a].nome, apontos, bpontos, m.clube[b].nome);
 		}
 	}
 	fclose(fread); fclose(fwrite);
@@ -154,7 +155,6 @@ void ListarTudo()
 }
 int ResultadoRandom(clube a, int max)
 {
-	srand(time(NULL));
 	int pontos = 0;
 	for (int i = 0; i < max; i++)
 	{
@@ -165,7 +165,6 @@ int ResultadoRandom(clube a, int max)
 }
 int ValorRandomComBaseNaProb(clube a, int max)
 {
-	srand(time(NULL));
 	int pontos = 0;
 	for (int i = 0; i < max; i++)
 	{

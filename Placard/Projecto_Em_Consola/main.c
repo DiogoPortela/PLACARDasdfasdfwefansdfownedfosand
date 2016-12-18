@@ -6,7 +6,7 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modaux, modalidades[10];
 	int pontos, pontos2;
-	clube x, x2;
+	clube x, x2, x3, x4, x5, x6;
 
 	FicheiroLeModalidades(modalidades);
 	//Ler Clubes
@@ -31,11 +31,23 @@ int main(void) //Menu
 			break;
 		case '2':
 			modaux = EscolheModalidade(modalidades);
-			*x.nome = "BENFICA";
-			*x2.nome = "SPORTING";
+			strcpy(x.nome, "BENFICA");
+			strcpy(x2.nome, "SPORTING");
+			strcpy(x3.nome, "FC.PORTO");
+			strcpy(x4.nome, "SP.BRAGA");
+			strcpy(x5.nome, "BOAVISTA");
+			strcpy(x6.nome, "BELENENSES");
+			modalidades[0].identificador = 1;
+			modalidades[0].maxpts = 6;
 			modalidades[0].clube[0] = x;
 			modalidades[0].clube[1] = x2;
+			modalidades[0].clube[2] = x3;
+			modalidades[0].clube[3] = x4;
+			modalidades[0].clube[4] = x5;
+			modalidades[0].clube[5] = x6;
 			AtribuiResultado(modalidades[0], 0, 1);
+			AtribuiResultado(modalidades[0], 2, 3);
+			AtribuiResultado(modalidades[0], 4, 5);
 			break;
 		case '3':
 			ListarTudo();
