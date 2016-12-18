@@ -89,17 +89,31 @@ void FicheiroImprimir(char nomeficheiro[])
 }
 void FicheiroLeModalidades(modalidade *mod)
 {
-	int numeroDeModalidades;
-	FILE *fd;
+	int numeroDeLinhas;
+	FILE *fmodalidades, *fclubes;
 
-	if (FicheiroExiste("modalidades.txt", &fd))
+	if (FicheiroExiste("modalidades.txt", &fmodalidades))
 	{
-		numeroDeModalidades = FicheiroLinhas("modalidades.txt");
-		for (int i = 0; i < numeroDeModalidades; i++)
+		numeroDeLinhas = FicheiroLinhas("modalidades.txt");
+		for (int i = 0; i < numeroDeLinhas; i++)
 		{
-			fscanf(fd, "%s", &mod[i].nome);
+			fscanf(fmodalidades, "%s", &mod[i].nome);
+			mod[i].identificador = i;
 		}
 	}
+	if (FicheiroExiste("clubes.txt", &fclubes))
+	{
+		int idaux = 0, contadorModalidades[60] = { 0 };
+		char aux[100];
+		numeroDeLinhas = FicheiroLinhas("clubes.txt");
+		for (int j = 0; j <= numeroDeLinhas; j++)
+		{
+			fscanf(fclubes, "%d- %s", &idaux, aux);
+			strcpy(mod[idaux - 1].clube[contadorModalidades[idaux - 1]].nome, aux);
+			contadorModalidades[idaux - 1]++;
+		}
+	}
+	fclose(fmodalidades); fclose(fclubes);
 }
 int FicheiroLinhas(char nomeficheiro[])
 {
@@ -201,6 +215,10 @@ void CriaJogo(modalidade mod, int a, int b)
 					fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 				}
 			}
+			if ((fscanf(fwrite, "%d- %s - %s\n", idaux, aux1.nome, aux2.nome) == EOF))
+			{
+				fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
+			}
 		}
 		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
 		else
@@ -210,4 +228,5 @@ void CriaJogo(modalidade mod, int a, int b)
 	}
 	fclose(fread); fclose(fwrite);
 }
+
 
