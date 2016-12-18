@@ -28,13 +28,14 @@ int main(void) //Menu
 		switch (tecla_menu)
 		{
 		case '1':	
-			*x.nome = "BENFICA";
-			x.probabilidade = 0.6;
-			*x2.nome = "SPORTING";
-			x2.probabilidade = 0.4;
 			break;
 		case '2':
 			modaux = EscolheModalidade(modalidades);
+			*x.nome = "BENFICA";
+			*x2.nome = "SPORTING";
+			modalidades[0].clube[0] = x;
+			modalidades[0].clube[1] = x2;
+			AtribuiResultado(modalidades[0], 0, 1);
 			break;
 		case '3':
 			ListarTudo();

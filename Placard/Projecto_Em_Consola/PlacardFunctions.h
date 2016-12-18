@@ -1,6 +1,6 @@
 /*HEADER FILE COM AS FUNCOES NECESSARIAS PARA TODO O CODIGO DO PROJETO*/
-void			AtribuiResultado			(clube a, clube b);
-void			CriaJogo					(modalidade mod, clube casa, clube fora);
+void			AtribuiResultado			(modalidade m, int a, int b);
+void			CriaJogo					(modalidade mod, int a, int b);
 modalidade		EscolheModalidade			(modalidade *mod);
 void			FicheiroExiste				(char nomeficheiro[], FILE **fd);
 void			FicheiroImprimir			(char nomeficheiro[]);

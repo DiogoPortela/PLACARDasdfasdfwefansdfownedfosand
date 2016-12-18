@@ -177,17 +177,15 @@ int ValorRandomComBaseNaProb(clube a, int max)
 
 
 
-//A PERCISAR DE REWORK
-
-
-void CriaJogo(modalidade mod, int a, int b) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
+//A PRECISAR DE REWORK
+void CriaJogo(modalidade mod, int a, int b)
 {
 	FILE *fread;
 	fread = fopen("clubes.txt", "r");
 	FILE *fwrite;
 	fwrite = fopen("jogos.txt", "a");
 	clube aux1, aux2;
-	int idaux;
+	int idaux = 0;
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
 	if (FicheiroExiste("clubes.txt", &fread) && FicheiroExiste("jogos.txt", &fwrite))
 	{
@@ -195,20 +193,20 @@ void CriaJogo(modalidade mod, int a, int b) //tera de ser alterado para cada eve
 		{
 			while (fscanf(fwrite, "%d- %s - %s\n", idaux, aux1.nome, aux2.nome) != EOF)
 			{
-				if (idaux == mod.indentificador && strcmp(aux1.nome, mod.clube[a].nome) && strcmp(aux2.nome, mod.clube[b].nome))
+				if (idaux == mod.identificador && strcmp(aux1.nome, mod.clube[a].nome) && strcmp(aux2.nome, mod.clube[b].nome))
 				{
 					printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
 				}
 				else
 				{
-					fprintf(fwrite, "%d- %s - %s\n", mod.indentificador, mod.clube[a].nome, mod.clube[b].nome);
+					fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 				}
 			}
 		}
 		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
 		else
 		{
-			fprintf(fwrite, "%d- %s - %s\n", mod.indentificador, mod.clube[a].nome, mod.clube[b].nome);
+			fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 		}
 	}
 	fclose(fread); fclose(fwrite);
