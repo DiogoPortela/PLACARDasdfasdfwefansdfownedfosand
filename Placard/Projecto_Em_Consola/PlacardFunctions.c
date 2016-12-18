@@ -1,4 +1,4 @@
-#include "PlacardStructs.h"
+ #include "PlacardStructs.h"
 
 //PRONTAS
 void AtribuiResultado(clube a, clube b)
@@ -20,6 +20,49 @@ void AtribuiResultado(clube a, clube b)
 			fprintf("%s %d - %d %s", a.nome, agolos, bgolos, b.nome);
 		}
 	}
+}
+modalidade EscolheModalidade(modalidade *mod)
+{
+	char modalidade_introduzida[20] = "";
+	int opcao = 0;
+	modalidade modaux;
+	FILE *fd;
+
+	if (FicheiroExiste("modalidades.txt", &fd))
+	{
+
+		printf("-----------------------\n");
+		printf("MODALIDADE DA APOSTA:\n");
+
+		// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
+
+		int a = FicheiroLinhas("modalidades.txt");
+		for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
+		{
+			printf("\t%d- %s\n", i + 1, mod[i].nome);
+		}
+
+		printf("\t0- VOLTAR ATRAS\n");
+		printf("OPCAO: ");
+		scanf("%d", &opcao);
+		while (getchar() != '\n');
+
+		// USAR UM LOOP PARA IMPRIMIR TODOS AS MODALIDADES
+
+		FILE *fd;
+		fd = fopen("modalidades.txt", "r");
+		for (int i = 1; i <= FicheiroLinhas("modalidades.txt"); i++)
+		{
+			char aux[60];
+			fscanf(fd, "%s", aux);
+			if (opcao == i)
+			{
+				strcpy(modaux.nome, aux);
+			}
+		}
+		fclose(fd);
+	}
+	return modaux;
 }
 int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado ficheiro existe
 {
@@ -136,58 +179,7 @@ int ValorRandomComBaseNaProb(clube a, int max)
 
 //A PERCISAR DE REWORK
 
-modalidade EscolheModalidade(modalidade *mod)
-{
-	char modalidade_introduzida[20] = "", opcao = 0;
-	modalidade modaux;
-	FILE *fd;
 
-	if (FicheiroExiste("modalidades.txt", &fd))
-	{
-		do
-		{
-			printf("-----------------------\n");
-			printf("MODALIDADE DA APOSTA:\n");
-
-			// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
-			for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
-			{
-				printf("\t%d- %s\n", i + 1, mod[i].nome);
-			}
-
-			printf("\t0- VOLTAR ATRAS\n");
-			printf("OPCAO: ");
-			scanf("%c", &opcao);
-			while (getchar() != '\n');
-
-
-			// USAR UM LOOP PARA IMPRIMIR TODOS AS MODALIDADES
-			switch (opcao)
-			{
-			case '1':
-				strcpy(modalidade_introduzida, "FUTEBOL");
-				break;
-			case '2':
-				strcpy(modalidade_introduzida, "BASQUETEBOL");
-				break;
-			case '3':
-				strcpy(modalidade_introduzida, "TENIS");
-				break;
-			case '0':
-				break;
-			default:
-				printf("\nERRO: SELECIONE UMA DAS OPCOES!\n");
-				break;
-			}
-			for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
-			{
-
-			}
-		} while (opcao != '0' && (fscanf(fd, "%s\n", &modaux.nome) != EOF) && (strcmp(modalidade_introduzida, modaux.nome) != 0));
-		fclose(fd);
-	}
-	return modaux;
-}
 void CriaJogo(modalidade mod, clube casa, clube fora) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
 {
 	FILE *fd;
