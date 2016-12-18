@@ -16,7 +16,7 @@ typedef struct
 {
 	char nome[Numero];
 	clube clube[Numero];
-	int maxpts, indentificador;
+	int maxpts;
 }modalidade;
 
 typedef struct

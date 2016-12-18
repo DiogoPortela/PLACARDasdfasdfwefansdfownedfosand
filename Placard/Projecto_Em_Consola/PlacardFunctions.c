@@ -186,25 +186,24 @@ void CriaJogo(modalidade mod, int a, int b) //tera de ser alterado para cada eve
 	fread = fopen("clubes.txt", "r");
 	FILE *fwrite;
 	fwrite = fopen("jogos.txt", "a");
-	clube aux1, aux2;
 	char aux[60];
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
 	if (FicheiroExiste("clubes.txt", &fread) && FicheiroExiste("jogos.txt", &fwrite))
 	{
-		while (fscanf(fwrite, "%*d- %s - %s\n", aux1.nome, aux2.nome) != EOF)
-		{
-			if (strcmp(aux1.nome, mod.clube[a].nome) && strcmp(aux2.nome, mod.clube[b].nome))
+			while (fscanf(fwrite, "%s - %s\n", aux) != EOF)
 			{
-				printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
+				if(aux == "%*d- %s - %s", mod.clube[a].nome, mod.clube[b].nome)
+				{
+					printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
+				}
 			}
 			else
 			{
-				fprintf(fwrite, "%d- %s - %s\n", mod.indentificador, mod.clube[a].nome, mod.clube[b].nome);
+				fprintf(fd, "%s - %s\n", casa.nome, fora.nome);
 			}
 		}
 	}
 }
-
 
 if (mod.nome == "BASQUETEBOL")
 {
