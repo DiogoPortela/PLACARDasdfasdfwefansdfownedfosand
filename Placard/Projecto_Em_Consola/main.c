@@ -6,7 +6,7 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modaux, modalidades[10];
 	int pontos, pontos2;
-	clube x;
+	clube x, x2;
 
 	FicheiroLeModalidades(modalidades);
 	//Ler Clubes
@@ -29,9 +29,9 @@ int main(void) //Menu
 		{
 		case '1':	
 			*x.nome = "BENFICA";
-			x.probabilidade = 0.7;
-			pontos = ResultadoRandom(x, 10);
-			pontos2 = ValorRandomComBaseNaProb(x, 10);
+			x.probabilidade = 0.6;
+			*x2.nome = "SPORTING";
+			x2.probabilidade = 0.4;
 			break;
 		case '2':
 			modaux = EscolheModalidade(modalidades);

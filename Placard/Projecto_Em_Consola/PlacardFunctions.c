@@ -1,25 +1,25 @@
- #include "PlacardStructs.h"
+#include "PlacardStructs.h"
 
 //PRONTAS
-void AtribuiResultado(clube a, clube b)
+void AtribuiResultado(modalidade m, int a, int b)
 {
-	FILE *fd;
+	FILE *fread;
+	fread = fopen("jogos.txt", "r");
+	FILE *fwrite;
+	fwrite = fopen("resultados.txt", "a");
+	int apontos, bpontos;
 	clube aux1, aux2;
-	int agolos, bgolos;
-
-	fd = fopen("jogosfutebol.txt", "r");
 
 	while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
 	{
-		if (strcmp(aux1.nome, a.nome) && strcmp(aux2.nome, b.nome))
+		if (strcmp(aux1.nome, m.clube[a].nome) && strcmp(aux2.nome, m.clube[b].nome))
 		{
-			fclose(fd);
-			fd = fopen("resultados.txt", "a");
-			agolos = ResultadoRandom(a, 4);
-			bgolos = ResultadoRandom(a, 4);
-			fprintf("%s %d - %d %s", a.nome, agolos, bgolos, b.nome);
+			apontos = ResultadoRandom(m.clube[a], m.maxpts);
+			bpontos = ResultadoRandom(m.clube[b], m.maxpts);
+			fprintf("%s %d - %d %s", m.clube[a].nome, apontos, bpontos, m.clube[b].nome);
 		}
 	}
+	fclose(fread); fclose(fwrite);
 }
 modalidade EscolheModalidade(modalidade *mod)
 {
@@ -121,7 +121,7 @@ int FicheiroLinhas(char nomeficheiro[])
 void ListarTudo()
 {
 	char opcao = 0, ficheiroAbrir[60], textoImprimir[60];
-	
+
 	do
 	{
 		printf("-----------------------\n");
@@ -180,73 +180,69 @@ int ValorRandomComBaseNaProb(clube a, int max)
 //A PERCISAR DE REWORK
 
 
-void CriaJogo(modalidade mod, clube casa, clube fora) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
+void CriaJogo(modalidade mod, int a, int b) //tera de ser alterado para cada evento ter 1 ficheiro de jogos.
 {
-	FILE *fd;
-	clube aux1, aux2;
+	FILE *fread;
+	fread = fopen("clubes.txt", "r");
+	FILE *fwrite;
+	fwrite = fopen("jogos.txt", "a");
+	char aux[60];
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
-	if (mod.nome == "FUTEBOL")
+	if (FicheiroExiste("clubes.txt", &fread) && FicheiroExiste("jogos.txt", &fwrite))
 	{
-		fd = fopen("jogosfutebol.txt", "a");
-
-		if (fd == NULL)
-		{
-			printf("\nFICHEIRO NAO ENCONTRADO!");
-		}
-		else
-		{
-			while (fscanf(fd, "%s - %s\n", aux1.nome, aux2.nome) != EOF)
+			while (fscanf(fwrite, "%s - %s\n", aux) != EOF)
 			{
-				if (strcmp(aux1.nome, casa.nome) && strcmp(aux2.nome, fora.nome))
+				if(aux == "%*d- %s - %s", mod.clube[a].nome, mod.clube[b].nome)
 				{
-					printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %S", casa.nome);
-				}
-				else
-				{
-					fprintf(fd, "%s - %s\n", casa.nome, fora.nome);
+					printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
 				}
 			}
-		}
-	}
-
-	if (mod.nome == "BASQUETEBOL")
-	{
-		fd = fopen("jogosbasquetebol.txt", "a");
-
-		if (fd == NULL)
-		{
-			printf("\nFICHEIRO NAO ENCONTRADO!");
-		}
-		else
-		{
-			while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
-			{
-				if (strcmp(aux1.nome, casa.nome) && strcmp(aux2.nome, fora.nome))
-				{
-					printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %S", casa.nome);
-				}
-				else
-				{
-					fprintf(fd, "%s - %s\n", casa.nome, fora.nome);
-				}
-			}
-		}
-	}
-	//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
-	if (mod.nome == "TENIS")
-	{
-		fd = fopen("jogostenis.txt", "a");
-
-		if (fd == NULL)
-		{
-			printf("\nFICHEIRO NAO ENCONTRADO!");
-		}
-		else
-		{
-			while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+			else
 			{
 				fprintf(fd, "%s - %s\n", casa.nome, fora.nome);
 			}
 		}
 	}
+}
+
+if (mod.nome == "BASQUETEBOL")
+{
+	fd = fopen("jogosbasquetebol.txt", "a");
+
+	if (fd == NULL)
+	{
+		printf("\nFICHEIRO NAO ENCONTRADO!");
+	}
+	else
+	{
+		while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+		{
+			if (strcmp(aux1.nome, casa.nome) && strcmp(aux2.nome, fora.nome))
+			{
+				printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %S", casa.nome);
+			}
+			else
+			{
+				fprintf(fd, "%s - %s\n", casa.nome, fora.nome);
+			}
+		}
+	}
+}
+//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
+if (mod.nome == "TENIS")
+{
+	fd = fopen("jogostenis.txt", "a");
+
+	if (fd == NULL)
+	{
+		printf("\nFICHEIRO NAO ENCONTRADO!");
+	}
+	else
+	{
+		while (fscanf("%s - %s\n", aux1.nome, aux2.nome) != EOF)
+		{
+			fprintf(fd, "%s - %s\n", casa.nome, fora.nome);
+		}
+	}
+}
 }

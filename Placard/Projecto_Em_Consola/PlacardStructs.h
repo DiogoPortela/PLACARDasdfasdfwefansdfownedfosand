@@ -15,13 +15,8 @@ typedef	struct
 typedef struct
 {
 	char nome[Numero];
-	clube clubes[Numero];
-}evento;
-
-typedef struct
-{
-	char nome[Numero];
-	clube evento[Numero];
+	clube clube[Numero];
+	int maxpts;
 }modalidade;
 
 typedef struct
