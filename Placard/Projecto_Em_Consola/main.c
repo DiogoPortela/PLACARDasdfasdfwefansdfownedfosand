@@ -6,7 +6,6 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modaux, modalidades[10];
 	int pontos, pontos2;
-	clube x, x2, x3, x4, x5, x6;
 
 	FicheiroLeModalidades(modalidades);
 	//Ler Clubes
@@ -31,17 +30,22 @@ int main(void) //Menu
 			break;
 		case '2':
 			modalidades[0].maxpts = 6;
+			int contadordaseed = 0;
 			for (int i = 0; i < FicheiroLinhas("clubes.txt"); i++)
 			{
 				for (int j = 0; j < FicheiroLinhas("clubes.txt"); j++)
 				{
 					if (i != j)
 					{
+						srand(SeedAleatoria() + contadordaseed);
 						CriaJogo(modalidades[0], i, j);
 						AtribuiResultado(modalidades[0], i, j);
+						contadordaseed++;
 					}
 				}
+				
 			}
+			printf("SIMULACAO CONCLUIDA!");
 			//modaux = EscolheModalidade(modalidades);
 			break;
 		case '3':

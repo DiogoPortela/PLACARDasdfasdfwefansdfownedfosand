@@ -82,6 +82,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <StackReserveSize>9437184</StackReserveSize>
+    </Link>
+    <Link>
+      <StackCommitSize>9216</StackCommitSize>
+      <HeapReserveSize>9437184</HeapReserveSize>
+      <HeapCommitSize>9216</HeapCommitSize>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

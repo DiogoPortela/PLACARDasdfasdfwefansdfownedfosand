@@ -14,10 +14,9 @@ void AtribuiResultado(modalidade m, int a, int b)
 	{
 		if (!strcmp(aux1.nome, m.clube[a].nome) && !strcmp(aux2.nome, m.clube[b].nome))
 		{
-			srand(time(NULL));
 			apontos = ResultadoRandom(m.clube[a], m.maxpts);
 			bpontos = ResultadoRandom(m.clube[b], m.maxpts);
-			fprintf(fwrite, "%d- %s %d - %d %s\n", m.identificador, m.clube[a].nome, apontos, bpontos, m.clube[b].nome);
+			fprintf(fwrite, "%d- %s %d - %d %s\n", m.identificador + 1, m.clube[a].nome, apontos, bpontos, m.clube[b].nome);
 		}
 	}
 	fclose(fread); fclose(fwrite);
@@ -129,6 +128,7 @@ int FicheiroLinhas(char nomeficheiro[])
 		{
 			linhas++;
 		}
+
 	} while (letra != EOF);
 	fclose(fd);
 	return linhas;
@@ -173,9 +173,14 @@ int ResultadoRandom(clube a, int max)
 	for (int i = 0; i < max; i++)
 	{
 		pontos += rand() % 2;
-		printf("%d\n", pontos);
 	}
 	return pontos;
+}
+int SeedAleatoria()
+{
+	int seed = 0;
+	srand(time(NULL));
+	seed += rand() % 99999999999;
 }
 int ValorRandomComBaseNaProb(clube a, int max)
 {
@@ -196,28 +201,33 @@ void CriaJogo(modalidade mod, int a, int b)
 	FILE *fread;
 	fread = fopen("clubes.txt", "r");
 	FILE *fwrite;
-	fwrite = fopen("jogos.txt", "a");
+	fwrite = fopen("jogos.txt", "a+");
 	clube aux1, aux2;
 	int idaux = 0;
+	int x = 0, y = 0;
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
 	if (FicheiroExiste("clubes.txt", &fread) && FicheiroExiste("jogos.txt", &fwrite))
 	{
 		if (mod.nome != "TENIS")
 		{
-			while (fscanf(fwrite, "%d- %s - %s\n", idaux, aux1.nome, aux2.nome) != EOF)
+			if (fscanf(fwrite, "%*d- %s - %s\n", aux1.nome, aux2.nome) != EOF)
 			{
-				if (idaux == mod.identificador && strcmp(aux1.nome, mod.clube[a].nome) && strcmp(aux2.nome, mod.clube[b].nome))
+				while (fscanf(fwrite, "%d- %s - %s\n", &idaux, aux1.nome, aux2.nome) != EOF)
 				{
-					printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
-				}
-				else
-				{
-					fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
+					if (idaux == mod.identificador && strcmp(aux1.nome, mod.clube[a].nome) == 0 && strcmp(aux2.nome, mod.clube[b].nome) == 0)
+					{
+						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
+					}
+					else
+					{
+						fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
+					}
 				}
 			}
-			if ((fscanf(fwrite, "%d- %s - %s\n", idaux, aux1.nome, aux2.nome) == EOF))
+			else
 			{
-				fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
+				fwrite = fopen("jogos.txt", "w");
+				fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
 			}
 		}
 		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
