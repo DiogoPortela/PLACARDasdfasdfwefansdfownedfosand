@@ -45,7 +45,7 @@ int main(void) //Menu
 				}
 				
 			}
-			printf("SIMULACAO CONCLUIDA!");
+			printf("SIMULACAO CONCLUIDA!\n");
 			//modaux = EscolheModalidade(modalidades);
 			break;
 		case '3':

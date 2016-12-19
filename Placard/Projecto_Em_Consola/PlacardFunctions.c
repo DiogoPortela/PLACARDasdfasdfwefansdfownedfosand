@@ -66,7 +66,7 @@ modalidade EscolheModalidade(modalidade *mod)
 }
 int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado ficheiro existe
 {
-	*fd = fopen(nomeficheiro, "r");
+	*fd = fopen(nomeficheiro, "a+");
 
 	if (*fd == NULL)
 	{
@@ -199,9 +199,7 @@ int ValorRandomComBaseNaProb(clube a, int max)
 void CriaJogo(modalidade mod, int a, int b)
 {
 	FILE *fread;
-	fread = fopen("clubes.txt", "r");
 	FILE *fwrite;
-	fwrite = fopen("jogos.txt", "a+");
 	clube aux1, aux2;
 	int idaux = 0;
 	int x = 0, y = 0;
@@ -210,24 +208,26 @@ void CriaJogo(modalidade mod, int a, int b)
 	{
 		if (mod.nome != "TENIS")
 		{
-			if (fscanf(fwrite, "%*d- %s - %s\n", aux1.nome, aux2.nome) != EOF)
+			if (fgetc(fwrite) == EOF)
 			{
-				while (fscanf(fwrite, "%d- %s - %s\n", &idaux, aux1.nome, aux2.nome) != EOF)
-				{
-					if (idaux == mod.identificador && strcmp(aux1.nome, mod.clube[a].nome) == 0 && strcmp(aux2.nome, mod.clube[b].nome) == 0)
-					{
-						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
-					}
-					else
-					{
-						fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
-					}
-				}
+				fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+				fclose(fwrite);
 			}
 			else
 			{
-				fwrite = fopen("jogos.txt", "w");
-				fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+				fwrite = fopen("jogos.txt", "a+");
+				while (fscanf(fwrite, "%d- %s - %s\n", &idaux, aux1.nome, aux2.nome) != EOF)
+				{
+					if (idaux == mod.identificador + 1 && strcmp(aux1.nome, mod.clube[a].nome) == 0 && strcmp(aux2.nome, mod.clube[b].nome) == 0)
+					{
+						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
+						break;
+					}
+					else
+					{
+						fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+					}
+				}
 			}
 		}
 		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
@@ -235,8 +235,9 @@ void CriaJogo(modalidade mod, int a, int b)
 		{
 			fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 		}
+		fclose(fread);
+		fclose(fwrite);
 	}
-	fclose(fread); fclose(fwrite);
 }
 
 
