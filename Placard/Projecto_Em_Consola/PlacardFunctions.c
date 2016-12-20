@@ -202,7 +202,8 @@ void CriaJogo(modalidade mod, int a, int b)
 	FILE *fwrite;
 	clube aux1, aux2;
 	int idaux = 0;
-	int x = 0, y = 0;
+	char *dividestr;
+	char buffer[60], str1[30], str2[30], str3[30];
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
 	if (FicheiroExiste("clubes.txt", &fread) && FicheiroExiste("jogos.txt", &fwrite))
 	{
@@ -211,22 +212,36 @@ void CriaJogo(modalidade mod, int a, int b)
 			if (fgetc(fwrite) == EOF)
 			{
 				fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
-				fclose(fwrite);
 			}
 			else
 			{
+				fclose(fwrite);
 				fwrite = fopen("jogos.txt", "a+");
-				while (fscanf(fwrite, "%d- %s - %s\n", &idaux, aux1.nome, aux2.nome) != EOF)
+				while (fgets(buffer, sizeof(buffer), fwrite) != EOF)
 				{
-					if (idaux == mod.identificador + 1 && strcmp(aux1.nome, mod.clube[a].nome) == 0 && strcmp(aux2.nome, mod.clube[b].nome) == 0)
+					dividestr = strtok(buffer, "- \n");
+					while(dividestr != NULL)
 					{
-						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s", mod.clube[a].nome);
+							strcpy(str1, dividestr);
+							dividestr = strtok(NULL, "- \n");
+							strcpy(str2, dividestr);
+							dividestr = strtok(NULL, "- \n");
+							strcpy(str3, dividestr);
+							dividestr = strtok(NULL, "- \n");
+					}
+					if (str1[0] == mod.identificador + 1 && strcmp(str2, mod.clube[a].nome) == 0 && strcmp(str3, mod.clube[b].nome) == 0)
+					{
+						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s\n", mod.clube[a].nome);
 						break;
 					}
 					else
 					{
 						fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+						fclose(fwrite);
 					}
+					strcpy(str1, "");
+					strcpy(str2, "");
+					strcpy(str3, "");
 				}
 			}
 		}
@@ -235,8 +250,7 @@ void CriaJogo(modalidade mod, int a, int b)
 		{
 			fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 		}
-		fclose(fread);
-		fclose(fwrite);
+		fclose(fread); fclose(fwrite);
 	}
 }
 
