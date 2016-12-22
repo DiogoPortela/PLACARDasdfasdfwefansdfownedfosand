@@ -7,6 +7,7 @@ void			FicheiroExiste				(char nomeficheiro[], FILE **fd);
 void			FicheiroImprimir			(char nomeficheiro[]);
 void			FicheiroLeModalidades		(modalidade *mod);
 int				FicheiroLinhas				(char nomeficheiro[]);
+void			GerirSaldo					(int *saldo);
 void			ListarTudo					();
 int				ResultadoRandom				(clube a, int max);
 int				ValorRandomComBaseNaProb	(clube a, int max);

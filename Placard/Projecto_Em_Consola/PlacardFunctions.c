@@ -23,23 +23,21 @@ void AtribuiResultado(modalidade m, int a, int b)
 }
 modalidade EscolheModalidade(modalidade *mod)
 {
-	char modalidade_introduzida[20] = "";
-	int opcao = 0;
-	modalidade modaux;
-	FILE *fd;
+	char modalidade_introduzida[20] = { 0 }, charAux[20];
+	int opcao = 0, intAux, numeroLinhas;
+	modalidade modAux;
+	FILE *fModalidades;
 
-	if (FicheiroExiste("modalidades.txt", &fd))
+	if (FicheiroExiste("modalidades.txt", &fModalidades))
 	{
-
 		printf("-----------------------\n");
 		printf("MODALIDADE DA APOSTA:\n");
 
 		// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
-
-		int a = FicheiroLinhas("modalidades.txt");
-		for (int i = 0; i < FicheiroLinhas("modalidades.txt"); i++)
+		numeroLinhas = FicheiroLinhas("modalidades.txt");
+		for (intAux = 0; intAux < numeroLinhas; intAux++)
 		{
-			printf("\t%d- %s\n", i + 1, mod[i].nome);
+			printf("\t%d- %s\n", intAux + 1, mod[intAux].nome);
 		}
 
 		printf("\t0- VOLTAR ATRAS\n");
@@ -49,24 +47,22 @@ modalidade EscolheModalidade(modalidade *mod)
 
 		// USAR UM LOOP PARA IMPRIMIR TODOS AS MODALIDADES
 
-		FILE *fd;
-		fd = fopen("modalidades.txt", "r");
-		for (int i = 1; i <= FicheiroLinhas("modalidades.txt"); i++)
+		for (int i = 1; i <= numeroLinhas; i++)
 		{
-			char aux[60];
-			fscanf(fd, "%s", aux);
+			fscanf(fModalidades, "%s", charAux);
 			if (opcao == i)
 			{
-				strcpy(modaux.nome, aux);
+				strcpy(modAux.nome, charAux);
+				break;
 			}
 		}
-		fclose(fd);
+		fclose(fModalidades);
 	}
-	return modaux;
+	return modAux;
 }
 int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado ficheiro existe
 {
-	*fd = fopen(nomeficheiro, "a+");
+	*fd = fopen(nomeficheiro, "r+");
 
 	if (*fd == NULL)
 	{
@@ -77,65 +73,79 @@ int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado fichei
 }
 void FicheiroImprimir(char nomeficheiro[])
 {
-	FILE *fd;
-	char textoImprimir[60];
-	fd = fopen(nomeficheiro, "r");
-	for (int i = 0; i < FicheiroLinhas(nomeficheiro); i++)
+	FILE *fAux;
+	char charAux;
+	int numeroLinhas = FicheiroLinhas(nomeficheiro);
+
+	fAux = fopen(nomeficheiro, "r+");
+
+	charAux = fgetc(fAux);
+	while (charAux != EOF)
 	{
-		fscanf(fd, "%s", textoImprimir);
-		printf("\n %s \n", textoImprimir);
+		printf("%c", charAux);
+		charAux = fgetc(fAux);
 	}
+	printf("\n");
+	fclose(fAux);
 }
 void FicheiroLeModalidades(modalidade *mod)
 {
 	int numeroDeLinhas;
-	FILE *fmodalidades, *fclubes;
+	FILE *fModalidades, *fClubes;
 
-	if (FicheiroExiste("modalidades.txt", &fmodalidades))
+	if (FicheiroExiste("modalidades.txt", &fModalidades))
 	{
 		numeroDeLinhas = FicheiroLinhas("modalidades.txt");
 		for (int i = 0; i < numeroDeLinhas; i++)
 		{
-			fscanf(fmodalidades, "%s", &mod[i].nome);
+			fscanf(fModalidades, "%*d- %s", &mod[i].nome);
 			mod[i].identificador = i;
 		}
+		fclose(fModalidades);
 	}
-	if (FicheiroExiste("clubes.txt", &fclubes))
+	if (FicheiroExiste("clubes.txt", &fClubes))
 	{
-		int idaux = 0, contadorModalidades[60] = { 0 };
-		char aux[100];
+		int idAux = 0, contadorModalidades[10] = { 0 };
+		char charAux[100];
 		numeroDeLinhas = FicheiroLinhas("clubes.txt");
 		for (int j = 0; j <= numeroDeLinhas; j++)
 		{
-			fscanf(fclubes, "%d- %s", &idaux, aux);
-			strcpy(mod[idaux - 1].clube[contadorModalidades[idaux - 1]].nome, aux);
-			contadorModalidades[idaux - 1]++;
+			fscanf(fClubes, "%d- %s", &idAux, charAux);
+			strcpy(mod[idAux - 1].clube[contadorModalidades[idAux - 1]].nome, charAux);
+			contadorModalidades[idAux - 1]++;
 		}
+		fclose(fClubes);
 	}
-	fclose(fmodalidades); fclose(fclubes);
 }
 int FicheiroLinhas(char nomeficheiro[])
 {
-	FILE *fd;
+	FILE *fAux;
 	int linhas = 1, letra;
 
-	fd = fopen(nomeficheiro, "r");
+	fAux = fopen(nomeficheiro, "r+");
+	letra = fgetc(fAux);
 
-	do
+	if (letra != EOF)
 	{
-		letra = fgetc(fd);
-		if (letra == '\n')
+		do
 		{
-			linhas++;
-		}
-
-	} while (letra != EOF);
-	fclose(fd);
+			if (letra == '\n')
+			{
+				linhas++;
+			}
+			letra = fgetc(fAux);
+		} while (letra != EOF);
+	}
+	else
+	{
+		linhas = 0;
+	}
+	fclose(fAux);
 	return linhas;
 }
 void ListarTudo()
 {
-	char opcao = 0, ficheiroAbrir[60], textoImprimir[60];
+	char opcao = 0;
 
 	do
 	{
@@ -146,6 +156,7 @@ void ListarTudo()
 		printf("\t0- SAIR.\n");
 		printf("OPCAO: ");
 		scanf("%c", &opcao);
+		printf("\n");
 		while (getchar() != '\n');
 
 		switch (opcao)
@@ -202,72 +213,78 @@ int ExisteFicheiro(char nome[])
 
 
 //A PRECISAR DE REWORK
+void GerirSaldo(int *saldo)
+{
+	FILE *fSaldo;
+	if (FicheiroExiste("saldo.txt", &fSaldo))
+	{
+		fprintf(fSaldo, "%d", -1);
+		fscanf(fSaldo, "%d", saldo);
+		if (saldo < 0)
+		{
+			printf("Introduza um valor inicial: ");
+			scanf("%d", saldo);
+		}
+		printf("O seu salto actual: %d\n", saldo);
+		fclose(fSaldo);
+	}
+}
 void CriaJogo(modalidade mod, int a, int b)
 {
-	FILE *fwrite;
-	clube aux1, aux2;
-	int idaux = 0;
-	char *dividestr = "";
-	char buffer[62], str1[2], str2[30], str3[30];
+	FILE *fJogosLeitura, *fJogosEscrita;
+	clube clubAux1, clubAux2;
+	int idAux = 0;
+
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
-	if (ExisteFicheiro("clubes.txt") && ExisteFicheiro("jogos.txt"))
+	if (FicheiroExiste("jogos.txt", &fJogosLeitura))
 	{
-		fwrite = fopen("jogos.txt", "a+");
+		fJogosEscrita = fopen("jogos.txt", "a+");
 
 		if (mod.nome != "TENIS")
 		{
-			//fgets(buffer, sizeof(buffer), fwrite);
 
-			if (feof(fwrite))
+			if (fgetc(fJogosLeitura) == -1)
 			{
-				fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+				fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
 			}
 			else
 			{
-				fclose(fwrite);
-				fwrite = fopen("jogos.txt", "a+");
-				while (fgets(buffer, sizeof(buffer), fwrite) != NULL)
+				while (fgetc(fJogosLeitura) != -1)
 				{
-					dividestr = _strdup(buffer);
-					dividestr = strtok(dividestr, "- \n");
-					strcpy(str1, dividestr);
-					dividestr = _strdup(buffer);
-					dividestr = strtok(NULL, "- \n");
-					strcpy(str2, dividestr);
-					dividestr = strtok(NULL, "- \n");
-					strcpy(str3, dividestr);
-
-					if (atoi(str1) == mod.identificador + 1 && strcmp(str2, mod.clube[a].nome) == 0 && strcmp(str3, mod.clube[b].nome) == 0)
+					fscanf(fJogosLeitura, "%d- %s - %s", &idAux, clubAux1.nome, clubAux2.nome);
+					if (idAux == mod.identificador + 1 && strcmp(clubAux1.nome, mod.clube[a].nome) == 0 && strcmp(clubAux2.nome, mod.clube[b].nome) == 0)
 					{
-						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s\n", mod.clube[a].nome);
+						printf("AS DUAS EQUIPAS Jï¿½ JOGARAM EM CASA DO %s\n", mod.clube[a].nome);
 						break;
 					}
 					else
 					{
-						fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+						fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
+						break;
 					}
-				}
+				}				
 			}
 		}
 		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
 		else
 		{
-			fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
+			fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 		}
-		fclose(fwrite);
+		fclose(fJogosEscrita);
+		fclose(fJogosLeitura);
 	}
 }
 int CalculaDifGolos(modalidade m, int a)
 {
 	FILE *fresultados;
-	fresultados = fopen("resultados.txt", "r");
-	char *dividestr = "";
+	//fresultados = fopen("resultados.txt", "r");
+	char *dividestr;
 	char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
 	int golosmarcados = 0, golossofridos = 0, tmp;
 
 	if (ExisteFicheiro("resultados.txt"))
 	{
-		while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
+		while (fgets(buffer, sizeof(buffer), &fresultados) != NULL)
 		{
 			if (strstr(buffer, m.clube[a].nome) != NULL)
 			{
@@ -283,7 +300,7 @@ int CalculaDifGolos(modalidade m, int a)
 				strcpy(str4, dividestr);
 				dividestr = strtok(NULL, "- \n");
 				strcpy(str5, dividestr);
-				if (strcmp(str2,m.clube[a].nome) == 0)
+				if (strcmp(str2, m.clube[a].nome) == 0)
 				{
 					tmp = atoi(str3);
 					golosmarcados += tmp;

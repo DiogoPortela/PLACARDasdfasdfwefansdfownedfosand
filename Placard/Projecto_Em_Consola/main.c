@@ -4,12 +4,11 @@
 int main(void) //Menu
 {
 	char tecla_menu = 0;
-	modalidade modaux, modalidades[10];
-	int pontos, pontos2;
+	modalidade modalidades[10];
+	jogo jogos[60];
 
 	FicheiroLeModalidades(modalidades);
-	//Ler Clubes
-	//Ler Resultados
+
 
 	do
 	{
@@ -33,14 +32,14 @@ int main(void) //Menu
 			/*int contadordaseed = 0;
 			for (int i = 0; i < FicheiroLinhas("clubes.txt"); i++)
 			{
-				for (int j = 0; j < FicheiroLinhas("clubes.txt"); j++)
+				for (int j = 0; j < linhasFicheiro; j++)
 				{
 					if (i != j)
 					{
-						srand(SeedAleatoria() + contadordaseed);
+						srand(SeedAleatoria() + contadorDaSeed);
 						CriaJogo(modalidades[0], i, j);
 						AtribuiResultado(modalidades[0], i, j);
-						contadordaseed++;
+						contadorDaSeed++;
 					}
 				}
 				

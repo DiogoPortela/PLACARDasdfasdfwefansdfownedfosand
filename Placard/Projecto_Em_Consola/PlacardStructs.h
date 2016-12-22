@@ -15,11 +15,14 @@ typedef	struct
 typedef struct
 {
 	char nome[Numero];
-	clube clube[Numero];
+	clube clube[20];
 	int maxpts, identificador;
 }modalidade;
 
 typedef struct
 {
-	char text[Numero];
-}string;
+	modalidade mod;
+	clube casa;
+	clube visitante;
+	int resultado[2];
+}jogo;
