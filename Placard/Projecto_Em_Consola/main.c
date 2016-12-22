@@ -6,6 +6,7 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modalidades[10];
 	jogo jogos[60];
+	int pontos, pontos2, saldo, linhasFicheiro;
 
 	FicheiroLeModalidades(modalidades);
 
@@ -25,12 +26,14 @@ int main(void) //Menu
 
 		switch (tecla_menu)
 		{
-		case '1':	
+		case '1':
+			GerirSaldo(&saldo);
 			break;
 		case '2':
 			modalidades[0].maxpts = 6;
-			/*int contadordaseed = 0;
-			for (int i = 0; i < FicheiroLinhas("clubes.txt"); i++)
+			int contadorDaSeed = 0;
+			linhasFicheiro = FicheiroLinhas("clubes.txt");
+			for (int i = 0; i < linhasFicheiro; i++)
 			{
 				for (int j = 0; j < linhasFicheiro; j++)
 				{
@@ -41,14 +44,13 @@ int main(void) //Menu
 						AtribuiResultado(modalidades[0], i, j);
 						contadorDaSeed++;
 					}
-				}
-				
+				}				
 			}
-			*/
-			pontos = CalculaDifGolos(modalidades[0], 0);
+			
+			/*pontos = CalculaDifGolos(modalidades[0], 0);
 			pontos2 = CalculaDifGolos(modalidades[0], 1);
 			printf("SIMULACAO CONCLUIDA!\n");
-			printf("%d %d\n", pontos, pontos2);
+			printf("%d %d\n", pontos, pontos2);*/
 			//modaux = EscolheModalidade(modalidades);
 			break;
 		case '3':
