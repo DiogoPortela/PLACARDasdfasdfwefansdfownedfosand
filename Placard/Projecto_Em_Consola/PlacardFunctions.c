@@ -192,24 +192,33 @@ int ValorRandomComBaseNaProb(clube a, int max)
 	}
 	return pontos;
 }
-
+int ExisteFicheiro(char nome[])
+{
+	FILE* fp = fopen(nome, "r");
+	if (fp == NULL) return 0;
+	fclose(fp);
+	return 1;
+}
 
 
 //A PRECISAR DE REWORK
 void CriaJogo(modalidade mod, int a, int b)
 {
-	FILE *fread;
 	FILE *fwrite;
 	clube aux1, aux2;
 	int idaux = 0;
-	char *dividestr;
-	char buffer[60], str1[30], str2[30], str3[30];
+	char *dividestr = "";
+	char buffer[62], str1[2], str2[30], str3[30];
 	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
-	if (FicheiroExiste("clubes.txt", &fread) && FicheiroExiste("jogos.txt", &fwrite))
+	if (ExisteFicheiro("clubes.txt") && ExisteFicheiro("jogos.txt"))
 	{
+		fwrite = fopen("jogos.txt", "a+");
+
 		if (mod.nome != "TENIS")
 		{
-			if (fgetc(fwrite) == EOF)
+			//fgets(buffer, sizeof(buffer), fwrite);
+
+			if (feof(fwrite))
 			{
 				fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
 			}
@@ -217,19 +226,18 @@ void CriaJogo(modalidade mod, int a, int b)
 			{
 				fclose(fwrite);
 				fwrite = fopen("jogos.txt", "a+");
-				while (fgets(buffer, sizeof(buffer), fwrite) != EOF)
+				while (fgets(buffer, sizeof(buffer), fwrite) != NULL)
 				{
-					dividestr = strtok(buffer, "- \n");
-					while(dividestr != NULL)
-					{
-							strcpy(str1, dividestr);
-							dividestr = strtok(NULL, "- \n");
-							strcpy(str2, dividestr);
-							dividestr = strtok(NULL, "- \n");
-							strcpy(str3, dividestr);
-							dividestr = strtok(NULL, "- \n");
-					}
-					if (str1[0] == mod.identificador + 1 && strcmp(str2, mod.clube[a].nome) == 0 && strcmp(str3, mod.clube[b].nome) == 0)
+					dividestr = _strdup(buffer);
+					dividestr = strtok(dividestr, "- \n");
+					strcpy(str1, dividestr);
+					dividestr = _strdup(buffer);
+					dividestr = strtok(NULL, "- \n");
+					strcpy(str2, dividestr);
+					dividestr = strtok(NULL, "- \n");
+					strcpy(str3, dividestr);
+
+					if (atoi(str1) == mod.identificador + 1 && strcmp(str2, mod.clube[a].nome) == 0 && strcmp(str3, mod.clube[b].nome) == 0)
 					{
 						printf("AS DUAS EQUIPAS JÁ JOGARAM EM CASA DO %s\n", mod.clube[a].nome);
 						break;
@@ -237,11 +245,7 @@ void CriaJogo(modalidade mod, int a, int b)
 					else
 					{
 						fprintf(fwrite, "%d- %s - %s\n", mod.identificador + 1, mod.clube[a].nome, mod.clube[b].nome);
-						fclose(fwrite);
 					}
-					strcpy(str1, "");
-					strcpy(str2, "");
-					strcpy(str3, "");
 				}
 			}
 		}
@@ -250,8 +254,54 @@ void CriaJogo(modalidade mod, int a, int b)
 		{
 			fprintf(fwrite, "%d- %s - %s\n", mod.identificador, mod.clube[a].nome, mod.clube[b].nome);
 		}
-		fclose(fread); fclose(fwrite);
+		fclose(fwrite);
 	}
+}
+int CalculaDifGolos(modalidade m, int a)
+{
+	FILE *fresultados;
+	fresultados = fopen("resultados.txt", "r");
+	char *dividestr = "";
+	char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
+	int golosmarcados = 0, golossofridos = 0, tmp;
+
+	if (ExisteFicheiro("resultados.txt"))
+	{
+		while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
+		{
+			if (strstr(buffer, m.clube[a].nome) != NULL)
+			{
+				dividestr = _strdup(buffer);
+				dividestr = strtok(dividestr, "- \n");
+				strcpy(str1, dividestr);
+				//dividestr = _strdup(buffer);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str2, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str3, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str4, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str5, dividestr);
+				if (strcmp(str2,m.clube[a].nome) == 0)
+				{
+					tmp = atoi(str3);
+					golosmarcados += tmp;
+					tmp = atoi(str4);
+					golossofridos += tmp;
+				}
+				else
+				{
+					tmp = atoi(str4);
+					golosmarcados += tmp;
+					tmp = atoi(str3);
+					golossofridos += tmp;
+				}
+			}
+		}
+		fclose(fresultados);
+	}
+	return golosmarcados - golossofridos;
 }
 
 

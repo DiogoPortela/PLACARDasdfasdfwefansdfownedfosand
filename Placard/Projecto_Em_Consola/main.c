@@ -30,7 +30,7 @@ int main(void) //Menu
 			break;
 		case '2':
 			modalidades[0].maxpts = 6;
-			int contadordaseed = 0;
+			/*int contadordaseed = 0;
 			for (int i = 0; i < FicheiroLinhas("clubes.txt"); i++)
 			{
 				for (int j = 0; j < FicheiroLinhas("clubes.txt"); j++)
@@ -45,7 +45,11 @@ int main(void) //Menu
 				}
 				
 			}
+			*/
+			pontos = CalculaDifGolos(modalidades[0], 0);
+			pontos2 = CalculaDifGolos(modalidades[0], 1);
 			printf("SIMULACAO CONCLUIDA!\n");
+			printf("%d %d\n", pontos, pontos2);
 			//modaux = EscolheModalidade(modalidades);
 			break;
 		case '3':
