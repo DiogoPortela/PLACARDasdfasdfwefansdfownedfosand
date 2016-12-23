@@ -6,7 +6,7 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modalidades[10], modAux;
 	jogo jogos[307];
-	int pontos, pontos2, saldo, linhasFicheiro;
+	int pontos, pontos2, saldo, linhasFicheiro, contadorDaSeed;
 
 	FicheiroLeData(modalidades, jogos);
 
@@ -30,7 +30,9 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':
-			modAux = EscolheModalidade(modalidades);
+			//modAux = EscolheModalidade(modalidades);
+			//pontos = CalculaMediaGolos();
+			//printf("%f\n", pontos);
 			//AQUI DEVE FAZER DISPLAY DOS JOGOS POSSIVEIS DE APOSTAR (ESCOLHER PRAI UNS 5 ALEATORIOS E CERTIFICAR QUE NAO ESCOHLE O MESMO
 			//JOGO DUAS VEZES DURANTE UMA TEMPORADA) E MOSTRAR A TAL COTA. NAO ESQUECER USAR O ARRAY DE JOGOS E AUMENTA-LO PARA MAIS MODALIDADES.
 
@@ -38,7 +40,7 @@ int main(void) //Menu
 
 			//AQUI VERIFICA SE GANHOU PERDEU EMPATOU E ACTUALIZA O SALDO
 
-			/*int contadorDaSeed = 0;
+			contadorDaSeed = 0;
 			linhasFicheiro = FicheiroLinhas("clubes.txt");
 			for (int i = 0; i < linhasFicheiro; i++)
 			{
@@ -52,13 +54,12 @@ int main(void) //Menu
 						contadorDaSeed++;
 					}
 				}				
-			}*/
+			}
+			printf("SIMULACAO CONCLUIDA!\n");
 			
 			/*pontos = CalculaDifGolos(modalidades[0], 0);
 			pontos2 = CalculaDifGolos(modalidades[0], 1);
-			printf("SIMULACAO CONCLUIDA!\n");
 			printf("%d %d\n", pontos, pontos2);*/
-			//modaux = EscolheModalidade(modalidades);
 			break;
 		case '3':
 			ListarTudo();

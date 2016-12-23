@@ -238,7 +238,7 @@ int SeedAleatoria()
 {
 	int seed = 0;
 	srand(time(NULL));
-	seed += rand() % 99999999999;
+	seed += rand() % 9999999999999999999;
 }
 int ValorRandomComBaseNaProb(clube a, int max)
 {
@@ -246,17 +246,9 @@ int ValorRandomComBaseNaProb(clube a, int max)
 	for (int i = 0; i < max; i++)
 	{
 		pontos += rand() < a.probabilidade * ((float)RAND_MAX + 1.0);
-		printf("%d\n", pontos);
 	}
 	return pontos;
 }
-int ExisteFicheiro(char nome[]) //Funcao desnecessaria abrir em "r" ou "a+" é a mesma shit.
-{
-	FILE* fp = fopen(nome, "r");
-	if (fp == NULL) return 0;
-	fclose(fp);
-	return 1;
-} 
 
 
 //A PRECISAR DE REWORK
@@ -275,20 +267,19 @@ void CriaJogo(modalidade mod, int a, int b)
 		if (mod.nome != "TENIS")
 		{
 
-			if (fgetc(fJogosLeitura) == -1)
+			if (feof(fJogosLeitura))
 			{
 				fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador + 1, mod.listaClubes[a].nome, mod.listaClubes[b].nome);
 			}
 			else
 			{
-				rewind(fJogosLeitura);
-				while (fgetc(fJogosLeitura) != -1)
+				while (!feof(fJogosLeitura))
 				{
 					fscanf(fJogosLeitura, "%d- %s- %s", &idAux, clubAux1.nome, clubAux2.nome);
 					if (idAux == mod.identificador + 1 && strcmp(clubAux1.nome, mod.listaClubes[a].nome) == 0 && strcmp(clubAux2.nome, mod.listaClubes[b].nome) == 0)
 					{
 						//ESTA PARTE DO CODIGO PODE SER REMOVIDA SE FIZERMOS A FUNÇÃO SÓ CORRER UMA VEZ.
-						printf("AS DUAS EQUIPAS J� JOGARAM EM CASA DO %s\n", mod.listaClubes[a].nome);
+						printf("AS DUAS EQUIPAS JA JOGARAM EM CASA DO %s\n", mod.listaClubes[a].nome);
 						break;
 					}
 					else
@@ -308,24 +299,22 @@ void CriaJogo(modalidade mod, int a, int b)
 		fclose(fJogosLeitura);
 	}
 }
-int CalculaDifGolos(modalidade m, int a)
+int CalculaDifGolos(modalidade m, int a) //falta definir que e so para os ultimos 6 jogos (como eq limitamos que sao as ultimas 6 leituras no texto?)
 {
 	FILE *fresultados;
-	//fresultados = fopen("resultados.txt", "r");
 	char *dividestr;
 	char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
 	int golosmarcados = 0, golossofridos = 0, tmp;
 
-	if (ExisteFicheiro("resultados.txt"))
+	if (FicheiroExiste("resultados.txt", &fresultados))
 	{
-		while (fgets(buffer, sizeof(buffer), &fresultados) != NULL)
+		while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
 		{
 			if (strstr(buffer, m.listaClubes[a].nome) != NULL)
 			{
 				dividestr = _strdup(buffer);
 				dividestr = strtok(dividestr, "- \n");
 				strcpy(str1, dividestr);
-				//dividestr = _strdup(buffer);
 				dividestr = strtok(NULL, "- \n");
 				strcpy(str2, dividestr);
 				dividestr = strtok(NULL, "- \n");
@@ -353,4 +342,36 @@ int CalculaDifGolos(modalidade m, int a)
 		fclose(fresultados);
 	}
 	return golosmarcados - golossofridos;
+}
+float CalculaMediaGolos()
+{
+	FILE *fresultados;
+	char *dividestr;
+	char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
+	int golostotais = 0, tmp;
+
+	if (FicheiroExiste("resultados.txt", &fresultados))
+	{
+		while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
+		{
+			{
+				dividestr = _strdup(buffer);
+				dividestr = strtok(dividestr, "- \n");
+				strcpy(str1, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str2, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str3, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str4, dividestr);
+				dividestr = strtok(NULL, "- \n");
+				strcpy(str5, dividestr);
+
+				tmp = atoi(str3) + atoi(str4);
+				golostotais += tmp;
+			}
+			fclose(fresultados);
+		}
+		return golostotais / FicheiroLinhas("resultados.txt");
+	}
 }
