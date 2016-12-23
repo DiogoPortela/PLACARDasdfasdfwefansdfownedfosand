@@ -5,7 +5,7 @@ int				CalculaDifGolos				(modalidade m, int a);
 modalidade		EscolheModalidade			(modalidade *mod);
 void			FicheiroExiste				(char nomeficheiro[], FILE **fd);
 void			FicheiroImprimir			(char nomeficheiro[]);
-void			FicheiroLeModalidades		(modalidade *mod);
+void			FicheiroLeData				(modalidade *mod, jogo *jogos);
 int				FicheiroLinhas				(char nomeficheiro[]);
 void			GerirSaldo					(int *saldo);
 void			ListarTudo					();

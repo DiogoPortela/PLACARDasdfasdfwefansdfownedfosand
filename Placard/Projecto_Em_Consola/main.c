@@ -4,11 +4,11 @@
 int main(void) //Menu
 {
 	char tecla_menu = 0;
-	modalidade modalidades[10];
-	jogo jogos[60];
+	modalidade modalidades[10], modAux;
+	jogo jogos[307];
 	int pontos, pontos2, saldo, linhasFicheiro;
 
-	FicheiroLeModalidades(modalidades);
+	FicheiroLeData(modalidades, jogos);
 
 
 	do
@@ -30,8 +30,15 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':
-			modalidades[0].maxpts = 6;
-			int contadorDaSeed = 0;
+			modAux = EscolheModalidade(modalidades);
+			//AQUI DEVE FAZER DISPLAY DOS JOGOS POSSIVEIS DE APOSTAR (ESCOLHER PRAI UNS 5 ALEATORIOS E CERTIFICAR QUE NAO ESCOHLE O MESMO
+			//JOGO DUAS VEZES DURANTE UMA TEMPORADA) E MOSTRAR A TAL COTA. NAO ESQUECER USAR O ARRAY DE JOGOS E AUMENTA-LO PARA MAIS MODALIDADES.
+
+			//AQUI FAZ AQUELA PARTE TODA DE GERAR NUMEROS MUITO LINDA <3
+
+			//AQUI VERIFICA SE GANHOU PERDEU EMPATOU E ACTUALIZA O SALDO
+
+			/*int contadorDaSeed = 0;
 			linhasFicheiro = FicheiroLinhas("clubes.txt");
 			for (int i = 0; i < linhasFicheiro; i++)
 			{
@@ -45,7 +52,7 @@ int main(void) //Menu
 						contadorDaSeed++;
 					}
 				}				
-			}
+			}*/
 			
 			/*pontos = CalculaDifGolos(modalidades[0], 0);
 			pontos2 = CalculaDifGolos(modalidades[0], 1);
