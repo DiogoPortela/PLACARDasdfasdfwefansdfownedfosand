@@ -295,7 +295,7 @@ void Definicoes(modalidade *mod)
 			do
 			{
 				system("cls");
-				printf("\t1- CRIAR MODALIDADE\n\t2- ALTERAR MODALIDADE\n\t3- ELIMINAR MODALIDADE\n\t0- CANCELAR\nOPCAO: ");
+				printf("\t\t1- CRIAR MODALIDADE\n\t\t2- ALTERAR MODALIDADE\n\t\t3- ELIMINAR MODALIDADE\n\t\t0- CANCELAR\nOPCAO: ");
 				scanf("%c", &input2);
 				while (getchar() != '\n');
 				switch (input2)
