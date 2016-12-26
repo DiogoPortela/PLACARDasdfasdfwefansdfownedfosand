@@ -9,10 +9,13 @@ int main(void) //Menu
 	int saldo, pontos, pontos2, linhasFicheiro, contadorDaSeed;
 
 	FicheiroLeData(modalidades);
+	
+	printf("PLACARD 1.0\n");
+	LimpaEcra();
 
 	do
 	{
-		printf("1- VER O SEU SALDO\n");
+		printf("1- SALDO\n");
 		printf("2- JOGAR\n");
 		printf("3- LISTAR\n");
 		printf("4- ALTERAR DEFINICOES\n");

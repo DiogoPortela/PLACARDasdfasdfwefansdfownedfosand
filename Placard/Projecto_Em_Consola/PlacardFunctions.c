@@ -3,7 +3,7 @@
 //PRONTAS
 void LimpaEcra(void)
 {
-	printf("CARREGUE QUALQUER TECLA PARA CONTINUAR...");
+	printf("\nCARREGUE QUALQUER TECLA PARA CONTINUAR...");
 	getch();
 	system("cls");
 }
@@ -93,6 +93,7 @@ void FicheiroImprimir(char nomeficheiro[])
 	fAux = fopen(nomeficheiro, "r+");
 
 	charAux = fgetc(fAux);
+	printf("\n");
 	while (charAux != EOF)
 	{
 		printf("%c", charAux);
@@ -192,7 +193,7 @@ void GerirSaldo(int *saldo)
 		if (getc(fSaldoLeitura) == -1)
 		{
 			fSaldoEscrita = fopen("saldo.txt", "w");
-			printf("\nIntroduza um valor inicial: ");
+			printf("\nINTRODUZA UM VALOR INICIAL: ");
 			scanf("%d", saldo);
 			while (getchar() != '\n');
 			fprintf(fSaldoEscrita, "%d", *saldo);
@@ -200,7 +201,7 @@ void GerirSaldo(int *saldo)
 		}
 		rewind(fSaldoLeitura);
 		fscanf(fSaldoLeitura, "%d", saldo);
-		printf("\nO seu salto actual: %d\n", *saldo);
+		printf("\nO SEU SALDO ACTUAL: %d\n", *saldo);
 		fclose(fSaldoLeitura);
 	}
 }
@@ -211,12 +212,12 @@ void ListarTudo()
 	do
 	{
 		printf("\t1- LISTAR MODALIDADES.\n");
-		printf("\t2- LISTAR JOGOS.\n");
-		printf("\t3- LISTAR RESULTADOS.\n");
+		printf("\t2- LISTAR CLUBES.\n");
+		printf("\t3- LISTAR JOGOS.\n");
+		printf("\t4- LISTAR RESULTADOS.\n");
 		printf("\t0- SAIR.\n");
 		printf("OPCAO: ");
 		scanf("%c", &opcao);
-		printf("\n");
 		while (getchar() != '\n');
 
 		switch (opcao)
@@ -225,11 +226,15 @@ void ListarTudo()
 			FicheiroImprimir("modalidades.txt");
 			LimpaEcra();
 			break;
-		case '2':
-			FicheiroImprimir("jogos.txt");
+		case'2':
+			FicheiroImprimir("clubes.txt");
 			LimpaEcra();
 			break;
 		case '3':
+			FicheiroImprimir("jogos.txt");
+			LimpaEcra();
+			break;
+		case '4':
 			FicheiroImprimir("resultados.txt");
 			LimpaEcra();
 			break;
@@ -292,7 +297,6 @@ void Definicoes(modalidade *mod)
 				system("cls");
 				printf("\t1- CRIAR MODALIDADE\n\t2- ALTERAR MODALIDADE\n\t3- ELIMINAR MODALIDADE\n\t0- CANCELAR\nOPCAO: ");
 				scanf("%c", &input2);
-				printf("\n");
 				while (getchar() != '\n');
 				switch (input2)
 				{
@@ -300,7 +304,7 @@ void Definicoes(modalidade *mod)
 					fModalidades = fopen("modalidades.txt", "a+");
 					if (mod[9].identificador < 0)
 					{
-						printf("INTRODUZA O NOME DA NOVA MODALIDADE: ");
+						printf("\nINTRODUZA O NOME DA NOVA MODALIDADE: ");
 						scanf("%s", a.nome);
 						while (getchar() != '\n');
 						printf("INTRODUZA O NUMERO MAXIMO DE PONTOS: ");
@@ -319,7 +323,7 @@ void Definicoes(modalidade *mod)
 					}
 					else
 					{
-						printf("NAO E POSSIVEL CRIAR MAIS MODALIDADES\n");
+						printf("\nNAO E POSSIVEL CRIAR MAIS MODALIDADES\n");
 					}
 
 					fclose(fModalidades);
@@ -331,6 +335,7 @@ void Definicoes(modalidade *mod)
 					fModalidades = fopen("modalidades.txt", "a+");
 					numeroLinhas = FicheiroLinhas("modalidades.txt");
 
+					printf("\n");
 					for (int i = 0; i < numeroLinhas; i++)
 					{
 						printf("%d- %s %d\n", i + 1, mod[i].nome, mod[i].maxpts);
@@ -342,7 +347,7 @@ void Definicoes(modalidade *mod)
 					if (intAux != 0 && intAux <= numeroLinhas)
 					{
 						printf("INTRODUZA O NOVO NOME DA MODALIDADE: ");
-						scanf("%s", mod[intAux -1].nome);
+						scanf("%s", mod[intAux - 1].nome);
 						while (getchar() != '\n');
 						printf("INTRODUZA O NOVO NUMERO MAXIMO DE PONTOS: ");
 						scanf("%d", &mod[intAux - 1].maxpts);
@@ -369,6 +374,7 @@ void Definicoes(modalidade *mod)
 					fModalidades = fopen("modalidades.txt", "a+");
 					numeroLinhas = FicheiroLinhas("modalidades.txt");
 
+					printf("\n");
 					for (int i = 0; i < numeroLinhas; i++)
 					{
 						printf("%d- %s %d\n", i + 1, mod[i].nome, mod[i].maxpts);
