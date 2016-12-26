@@ -5,13 +5,10 @@ int main(void) //Menu
 {
 	char tecla_menu = 0;
 	modalidade modalidades[10], modAux;
-	jogo jogos[307];
+	jogo jogoAux;
 	int pontos, pontos2, saldo, linhasFicheiro, contadorDaSeed;
 
-	FicheiroLeData(modalidades, jogos);
-
-	int a = CalculaDifGolos(modalidades[0], 0, 6);
-	float b = CalculaMediaGolos();
+	FicheiroLeData(modalidades);
 
 	do
 	{
@@ -30,12 +27,13 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':
-			//modAux = EscolheModalidade(modalidades);
+			modAux = EscolheModalidade(modalidades);
 			//pontos = CalculaMediaGolos();
 			//printf("%f\n", pontos);
+
 			//AQUI DEVE FAZER DISPLAY DOS JOGOS POSSIVEIS DE APOSTAR (ESCOLHER PRAI UNS 5 ALEATORIOS E CERTIFICAR QUE NAO ESCOHLE O MESMO
 			//JOGO DUAS VEZES DURANTE UMA TEMPORADA) E MOSTRAR A TAL COTA. NAO ESQUECER USAR O ARRAY DE JOGOS E AUMENTA-LO PARA MAIS MODALIDADES.
-
+			jogoAux = EscolheJogo(&modAux);
 			//AQUI FAZ AQUELA PARTE TODA DE GERAR NUMEROS MUITO LINDA <3
 
 			//AQUI VERIFICA SE GANHOU PERDEU EMPATOU E ACTUALIZA O SALDO
@@ -50,7 +48,7 @@ int main(void) //Menu
 					{
 						srand(SeedAleatoria() + contadorDaSeed);
 						//CriaJogo(modalidades[0], i, j);
-						AtribuiResultado(modalidades[0], i, j);
+						//AtribuiResultado(modalidades[0], i, j);
 						contadorDaSeed++;
 					}
 				}				
@@ -65,7 +63,7 @@ int main(void) //Menu
 			ListarTudo();
 			break;
 		case '4':
-			Definicoes(&modalidades, &jogos);
+			Definicoes(&modalidades);
 			break;
 		case '0':
 			break;

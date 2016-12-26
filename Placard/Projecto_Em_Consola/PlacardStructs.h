@@ -12,15 +12,15 @@ typedef	struct
 
 typedef struct
 {
-	char nome[60];
-	clube listaClubes[20];
-	int maxpts, identificador;
-}modalidade;
-
-typedef struct
-{
-	modalidade mod;
 	clube casa;
 	clube visitante;
 	int resultado[2];
 }jogo;
+
+typedef struct
+{
+	char nome[60];
+	clube listaClubes[20];
+	jogo listaJogos[320];
+	int maxpts, identificador;
+}modalidade;
