@@ -1,7 +1,7 @@
 /*HEADER FILE COM AS FUNCOES NECESSARIAS PARA TODO O CODIGO DO PROJETO*/
 void			AtribuiResultado			(modalidade m, int a, int b);
 void			CriaJogo					(modalidade mod, int a, int b);
-int				CalculaDifGolos				(modalidade m, int a);
+int				CalculaDifGolos				(modalidade m, int a, int ultimos);
 float			CalculaMediaGolos			(void);
 void			Definicoes					(modalidade *mod, jogo *jogos);
 modalidade		EscolheModalidade			(modalidade *mod);

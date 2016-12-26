@@ -10,6 +10,8 @@ int main(void) //Menu
 
 	FicheiroLeData(modalidades, jogos);
 
+	int a = CalculaDifGolos(modalidades[0], 0, 6);
+	float b = CalculaMediaGolos();
 
 	do
 	{

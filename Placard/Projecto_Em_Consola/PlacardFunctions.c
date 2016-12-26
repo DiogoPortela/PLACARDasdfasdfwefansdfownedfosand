@@ -339,15 +339,60 @@ void CriaJogo(modalidade mod, int a, int b)
 		fclose(fJogosLeitura);
 	}
 }
-int CalculaDifGolos(modalidade m, int a) //falta definir que e so para os ultimos 6 jogos (como eq limitamos que sao as ultimas 6 leituras no texto?)
+int CalculaDifGolos(modalidade m, int a, int ultimos) //falta definir que e so para os ultimos 6 jogos (como eq limitamos que sao as ultimas 6 leituras no texto?)
 {
-	FILE *fresultados;
-	char *dividestr;
-	char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
-	int golosmarcados = 0, golossofridos = 0, tmp;
+	FILE *fResultados;
+	//char *dividestr;
+	//char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
+	int golosMarcados = 0, golosSofridos = 0, numeroLinhas, numeroClube = 0, intAux1, intAux2;
+	char nomeClube1[60], nomeClube2[60];
 
-	if (FicheiroExiste("resultados.txt", &fresultados))
+	if (FicheiroExiste("resultados.txt", &fResultados))
 	{
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		rewind(fResultados);
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %s %d - %d %s", nomeClube1, &intAux1, &intAux2, nomeClube2);
+			if (!strcmp(nomeClube1, m.listaClubes[a].nome))
+			{
+				numeroClube++;
+			}
+			else if (!strcmp(nomeClube2, m.listaClubes[a].nome))
+			{
+				numeroClube++;
+			}
+		}
+
+		if (ultimos == 0)
+		{
+			ultimos = numeroClube;
+		}
+
+		rewind(fResultados);
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %s %d - %d %s", nomeClube1, &intAux1, &intAux2, nomeClube2);
+			if (!strcmp(nomeClube1, m.listaClubes[a].nome))
+			{
+				numeroClube--;
+				if (numeroClube > ultimos)
+				{
+					golosMarcados += intAux1;
+					golosSofridos += intAux2;
+				}
+			}
+			else if (!strcmp(nomeClube2, m.listaClubes[a].nome))
+			{
+				numeroClube--;
+				if (numeroClube > ultimos)
+				{
+					golosMarcados += intAux2;
+					golosSofridos += intAux1;
+				}
+			}
+		}
 		/*while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
 		{
 			if (strstr(buffer, m.listaClubes[a].nome) != NULL)
@@ -379,20 +424,27 @@ int CalculaDifGolos(modalidade m, int a) //falta definir que e so para os ultimo
 				}
 			}
 		}*/
-		fclose(fresultados);
+		fclose(fResultados);
 	}
-	return golosmarcados - golossofridos;
+	return golosMarcados - golosSofridos;
 }
 float CalculaMediaGolos()
 {
-	FILE *fresultados;
-	char *dividestr;
-	char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
-	int golostotais = 0, tmp;
+	FILE *fResultados;
+	//char *dividestr;
+	//char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
+	int golostotais = 0, intAux1, intAux2, numeroLinhas;
 
-	if (FicheiroExiste("resultados.txt", &fresultados))
+	if (FicheiroExiste("resultados.txt", &fResultados))
 	{
-		while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		rewind(fResultados);
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %*s %d - %d %*s",&intAux1, &intAux2);
+			golostotais += intAux1 + intAux2;
+		}
+		/*while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
 		{
 			{
 				dividestr = _strdup(buffer);
@@ -410,8 +462,9 @@ float CalculaMediaGolos()
 				tmp = atoi(str3) + atoi(str4);
 				golostotais += tmp;
 			}
-			fclose(fresultados);
-		}
-		return golostotais / FicheiroLinhas("resultados.txt");
+		}*/
+
+		fclose(fResultados);
+		return ((float) golostotais / (float) numeroLinhas);
 	}
 }
