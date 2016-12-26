@@ -271,7 +271,7 @@ int ValorRandomComBaseNaProb(clube a, int max)
 //A PRECISAR DE REWORK
 void Definicoes(modalidade *mod)
 {
-	char input, input2, flag1 = 0;
+	char input, input2;
 	system("cls");
 	do
 	{
@@ -281,7 +281,12 @@ void Definicoes(modalidade *mod)
 		switch (input)
 		{
 		case '1':
+		{
 			//Criar e editar modalidade
+
+			int numeroLinhas, intAux;
+			FILE *fModalidades;
+			modalidade a;
 			do
 			{
 				system("cls");
@@ -292,56 +297,88 @@ void Definicoes(modalidade *mod)
 				switch (input2)
 				{
 				case '1':
+					fModalidades = fopen("modalidades.txt", "a+");
 					if (mod[9].identificador < 0)
 					{
-						FILE *fModalidades;
-						if (FicheiroExiste("modalidades.txt", &fModalidades))
+						printf("INTRODUZA O NOME DA NOVA MODALIDADE: ");
+						scanf("%s", a.nome);
+						while (getchar() != '\n');
+						printf("INTRODUZA O NUMERO MAXIMO DE PONTOS: ");
+						scanf("%d", &a.maxpts);
+						while (getchar() != '\n');
+						for (int i = 0; i < 10; i++)
 						{
-							modalidade a;
-							printf("INTRODUZA O NOME DA NOVA MODALIDADE: ");
-							scanf("%s", a.nome);
-							while (getchar() != '\n');
-							printf("INTRODUZA O NUMERO MAXIMO DE PONTOS: ");
-							scanf("%d", &a.maxpts);
-							while (getchar() != '\n');
-							for (int i = 0; i < 10; i++)
+							if (mod[i].identificador < 0)
 							{
-								if (mod[i].identificador < 0)
-								{
-									a.identificador = i;
-									mod[i] = a;
-									fprintf(fModalidades, "\n%d- %s %d", a.identificador + 1, a.nome, a.maxpts);
-									flag1 = 1;
-									break;
-								}
+								a.identificador = i;
+								mod[i] = a;
+								fprintf(fModalidades, "\n%d- %s %d", a.identificador + 1, a.nome, a.maxpts);
+								break;
 							}
 						}
-						fclose(fModalidades);
 					}
 					else
 					{
 						printf("NAO E POSSIVEL CRIAR MAIS MODALIDADES\n");
 					}
-					LimpaEcra();
-					break;
-				case '2':
-					LimpaEcra();
-					break;
-				case '3':
-				{
-					int numeroLinhas = FicheiroLinhas("modalidades.txt"), intAux;
 
-					//Imprimir todas a modalidades e ler input
+					fclose(fModalidades);
+					LimpaEcra();
+					break;
+
+				case '2':
+					//Alterar modalidade
+					fModalidades = fopen("modalidades.txt", "a+");
+					numeroLinhas = FicheiroLinhas("modalidades.txt");
+
 					for (int i = 0; i < numeroLinhas; i++)
 					{
 						printf("%d- %s %d\n", i + 1, mod[i].nome, mod[i].maxpts);
 					}
-					printf("\nOPCAO: ");
+					printf("0- CANCELAR\n\nOPCAO: ");
+					scanf("%d", &intAux);
+					while (getchar() != '\n');
+
+					if (intAux != 0 && intAux <= numeroLinhas)
+					{
+						printf("INTRODUZA O NOVO NOME DA MODALIDADE: ");
+						scanf("%s", mod[intAux -1].nome);
+						while (getchar() != '\n');
+						printf("INTRODUZA O NOVO NUMERO MAXIMO DE PONTOS: ");
+						scanf("%d", &mod[intAux - 1].maxpts);
+						while (getchar() != '\n');
+
+						fclose(fModalidades);
+						fModalidades = fopen("modalidades.txt", "w");
+						fprintf(fModalidades, "%d- %s %d", 0, mod[0].nome, mod[0].maxpts);
+						for (int j = 1; j < numeroLinhas; j++)
+						{
+							fprintf(fModalidades, "\n%d- %s %d", j, mod[j].nome, mod[j].maxpts);
+						}
+					}
+
+					fclose(fModalidades);
+					LimpaEcra();
+					break;
+
+				case '3':
+				{
+					//Eliminar Modalidade
+					//Imprimir todas a modalidades e ler input
+
+					fModalidades = fopen("modalidades.txt", "a+");
+					numeroLinhas = FicheiroLinhas("modalidades.txt");
+
+					for (int i = 0; i < numeroLinhas; i++)
+					{
+						printf("%d- %s %d\n", i + 1, mod[i].nome, mod[i].maxpts);
+					}
+					printf("0- CANCELAR\n\nOPCAO: ");
 					scanf("%d", &intAux);
 					while (getchar() != '\n');
 
 					//Confirmar se deseja apagar e puxar tudo 1 para cima.
-					if (intAux <= numeroLinhas)
+					if (intAux <= numeroLinhas && intAux != 0)
 					{
 						do
 						{
@@ -351,9 +388,7 @@ void Definicoes(modalidade *mod)
 
 							if (toupper(input2) == 'Y')
 							{
-								FILE *fModalidades;
-								modalidade a;
-
+								fclose(fModalidades);
 								fModalidades = fopen("modalidades.txt", "w");
 
 								for (int j = 0; j < numeroLinhas; j++)
@@ -369,7 +404,6 @@ void Definicoes(modalidade *mod)
 								{
 									fprintf(fModalidades, "\n%d- %s %d", j, mod[j].nome, mod[j].maxpts);
 								}
-								fclose(fModalidades);
 								break;
 							}
 							else if (toupper(input2) == 'N')
@@ -378,20 +412,21 @@ void Definicoes(modalidade *mod)
 							}
 						} while (1);
 					}
-
-
+					fclose(fModalidades);
 					LimpaEcra();
 					break;
 				}
 				case '0':
+					LimpaEcra();
 					break;
 				default:
 					printf("INTRODUZA UM VALOR VALIDO.\n");
 					LimpaEcra();
 					break;
 				}
-			} while (input2 != '0' && flag1 == 0);
+			} while (input2 != '0');
 			break;
+		}
 		case '2':
 			//Criar e editar clubes (actualizar a lista de clubes com o criajogo)
 
