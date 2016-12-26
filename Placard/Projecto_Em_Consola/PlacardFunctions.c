@@ -1,6 +1,13 @@
 #include "PlacardStructs.h"
 
 //PRONTAS
+void LimpaEcra(void)
+{
+	printf("CARREGUE QUALQUER TECLA PARA CONTINUAR...");
+	getch();
+	system("cls");
+}
+
 void AtribuiResultado(modalidade m, int a, int b)
 {
 	FILE *fResultados, *fJogos;
@@ -193,10 +200,9 @@ void GerirSaldo(int *saldo)
 void ListarTudo()
 {
 	char opcao = 0;
-
+	system("cls");
 	do
-	{
-		printf("-----------------------\n");
+	{		
 		printf("\t1- LISTAR MODALIDADES.\n");
 		printf("\t2- LISTAR JOGOS.\n");
 		printf("\t3- LISTAR RESULTADOS.\n");
@@ -210,19 +216,24 @@ void ListarTudo()
 		{
 		case '1':
 			FicheiroImprimir("modalidades.txt");
+			LimpaEcra();
 			break;
 		case '2':
 			FicheiroImprimir("jogos.txt");
+			LimpaEcra();
 			break;
 		case '3':
 			FicheiroImprimir("resultados.txt");
+			LimpaEcra();
 			break;
 		case '0':
 			break;
 		default:
-			printf("\nALGO DEU ERRO. \n");
+			printf("INTRODUZ UM VALOR VALIDO.\n");
+			LimpaEcra();
 			break;
 		}
+
 	} while (opcao != '0');
 }
 int ResultadoRandom(clube a, int max)
@@ -234,7 +245,7 @@ int ResultadoRandom(clube a, int max)
 	}
 	return pontos;
 }
-int SeedAleatoria()
+int SeedAleatoria(void)
 {
 	int seed = 0;
 	srand(time(NULL));
@@ -252,7 +263,36 @@ int ValorRandomComBaseNaProb(clube a, int max)
 
 
 //A PRECISAR DE REWORK
+void Definicoes(modalidade *mod, jogo *jogos)
+{
+	char input;
+	system("cls");
+	do
+	{		
+		printf("\t1- ALTERAR MODALIDADES\n\t2- ALTERAR JOGOS\n\t3- ALTERAR COTAS\n\t0- SAIR\n\nOPCAO: ");
+		scanf("%c", &input);
+		while (getchar() != '\n');
+		switch (input)
+		{
+		case '1':
+			LimpaEcra();
+			break;
+		case '2':
+			LimpaEcra();
+			break;
+		case '3':
+			LimpaEcra();
+			break;
+		case '0':
+			break;
+		default:
+			printf("INTRODUZA UM VALOR VALIDO.\n");
+			LimpaEcra();
+			break;
+		}
 
+	} while (input != '0');
+}
 void CriaJogo(modalidade mod, int a, int b)
 {
 	FILE *fJogosLeitura, *fJogosEscrita;
@@ -308,7 +348,7 @@ int CalculaDifGolos(modalidade m, int a) //falta definir que e so para os ultimo
 
 	if (FicheiroExiste("resultados.txt", &fresultados))
 	{
-		while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
+		/*while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
 		{
 			if (strstr(buffer, m.listaClubes[a].nome) != NULL)
 			{
@@ -338,7 +378,7 @@ int CalculaDifGolos(modalidade m, int a) //falta definir que e so para os ultimo
 					golossofridos += tmp;
 				}
 			}
-		}
+		}*/
 		fclose(fresultados);
 	}
 	return golosmarcados - golossofridos;

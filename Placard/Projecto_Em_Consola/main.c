@@ -13,12 +13,10 @@ int main(void) //Menu
 
 	do
 	{
-		printf("-----------------------\n");
 		printf("1- VER O SEU SALDO\n");
 		printf("2- JOGAR\n");
 		printf("3- LISTAR\n");
 		printf("4- ALTERAR DEFINICOES\n");
-		printf("5- GRAVAR\n");
 		printf("0- SAIR\n\n");
 		printf("OPCAO: ");
 		scanf("%c", &tecla_menu);
@@ -49,7 +47,7 @@ int main(void) //Menu
 					if (i != j)
 					{
 						srand(SeedAleatoria() + contadorDaSeed);
-						CriaJogo(modalidades[0], i, j);
+						//CriaJogo(modalidades[0], i, j);
 						AtribuiResultado(modalidades[0], i, j);
 						contadorDaSeed++;
 					}
@@ -65,12 +63,15 @@ int main(void) //Menu
 			ListarTudo();
 			break;
 		case '4':
+			Definicoes(&modalidades, &jogos);
 			break;
-		case '5':
+		case '0':
 			break;
 		default:
+			printf("INTRODUZA UM VALOR VALIDO.\n");
 			break;
-		}
+		}		
+		LimpaEcra();
 	} while (tecla_menu != '0');
 	return 0;
 }
