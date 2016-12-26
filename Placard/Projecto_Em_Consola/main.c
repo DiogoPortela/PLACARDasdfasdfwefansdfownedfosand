@@ -6,7 +6,7 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modalidades[10], modAux;
 	jogo jogoAux;
-	int pontos, pontos2, saldo, linhasFicheiro, contadorDaSeed;
+	int saldo, pontos, pontos2, linhasFicheiro, contadorDaSeed;
 
 	FicheiroLeData(modalidades);
 
@@ -38,21 +38,7 @@ int main(void) //Menu
 
 			//AQUI VERIFICA SE GANHOU PERDEU EMPATOU E ACTUALIZA O SALDO
 
-			contadorDaSeed = 0;
-			linhasFicheiro = FicheiroLinhas("clubes.txt");
-			for (int i = 0; i < linhasFicheiro; i++)
-			{
-				for (int j = 0; j < linhasFicheiro; j++)
-				{
-					if (i != j)
-					{
-						srand(SeedAleatoria() + contadorDaSeed);
-						//CriaJogo(modalidades[0], i, j);
-						//AtribuiResultado(modalidades[0], i, j);
-						contadorDaSeed++;
-					}
-				}				
-			}
+			
 			printf("SIMULACAO CONCLUIDA!\n");
 			
 			/*pontos = CalculaDifGolos(modalidades[0], 0);

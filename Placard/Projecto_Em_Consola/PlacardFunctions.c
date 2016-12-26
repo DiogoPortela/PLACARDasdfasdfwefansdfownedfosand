@@ -31,7 +31,7 @@ void AtribuiResultado(modalidade m, int a, int b)
 }
 modalidade EscolheModalidade(modalidade *mod)
 {
-	char modalidade_introduzida[20] = { 0 }, charAux[20] = {0}, flag = 0;
+	char modalidade_introduzida[20] = { 0 }, charAux[20] = { 0 }, flag = 0;
 	int opcao = 0, intAux, numeroLinhas;
 	modalidade modAux;
 	FILE *fModalidades;
@@ -67,7 +67,7 @@ modalidade EscolheModalidade(modalidade *mod)
 					break;
 				}
 			}
-		} while (opcao != 0 && flag == 0);		
+		} while (opcao != 0 && flag == 0);
 		fclose(fModalidades);
 	}
 	LimpaEcra();
@@ -209,7 +209,7 @@ void ListarTudo()
 	char opcao = 0;
 	system("cls");
 	do
-	{		
+	{
 		printf("\t1- LISTAR MODALIDADES.\n");
 		printf("\t2- LISTAR JOGOS.\n");
 		printf("\t3- LISTAR RESULTADOS.\n");
@@ -268,14 +268,13 @@ int ValorRandomComBaseNaProb(clube a, int max)
 	return pontos;
 }
 
-
 //A PRECISAR DE REWORK
 void Definicoes(modalidade *mod)
 {
-	char input;
+	char input, input2, flag1 = 0;
 	system("cls");
 	do
-	{		
+	{
 		printf("\t1- ALTERAR MODALIDADES\n\t2- ALTERAR CLUBES\n\t3- ALTERAR COTAS\n\t0- SAIR\n\nOPCAO: ");
 		scanf("%c", &input);
 		while (getchar() != '\n');
@@ -283,10 +282,134 @@ void Definicoes(modalidade *mod)
 		{
 		case '1':
 			//Criar e editar modalidade
-			LimpaEcra();
+			do
+			{
+				system("cls");
+				printf("\t1- CRIAR MODALIDADE\n\t2- ALTERAR MODALIDADE\n\t3- ELIMINAR MODALIDADE\n\t0- CANCELAR\nOPCAO: ");
+				scanf("%c", &input2);
+				printf("\n");
+				while (getchar() != '\n');
+				switch (input2)
+				{
+				case '1':
+					if (mod[9].identificador < 0)
+					{
+						FILE *fModalidades;
+						if (FicheiroExiste("modalidades.txt", &fModalidades))
+						{
+							modalidade a;
+							printf("INTRODUZA O NOME DA NOVA MODALIDADE: ");
+							scanf("%s", a.nome);
+							while (getchar() != '\n');
+							printf("INTRODUZA O NUMERO MAXIMO DE PONTOS: ");
+							scanf("%d", &a.maxpts);
+							while (getchar() != '\n');
+							for (int i = 0; i < 10; i++)
+							{
+								if (mod[i].identificador < 0)
+								{
+									a.identificador = i;
+									mod[i] = a;
+									fprintf(fModalidades, "\n%d- %s %d", a.identificador + 1, a.nome, a.maxpts);
+									flag1 = 1;
+									break;
+								}
+							}
+						}
+						fclose(fModalidades);
+					}
+					else
+					{
+						printf("NAO E POSSIVEL CRIAR MAIS MODALIDADES\n");
+					}
+					LimpaEcra();
+					break;
+				case '2':
+					LimpaEcra();
+					break;
+				case '3':
+				{
+					int numeroLinhas = FicheiroLinhas("modalidades.txt"), intAux;
+
+					//Imprimir todas a modalidades e ler input
+					for (int i = 0; i < numeroLinhas; i++)
+					{
+						printf("%d- %s %d\n", i + 1, mod[i].nome, mod[i].maxpts);
+					}
+					printf("\nOPCAO: ");
+					scanf("%d", &intAux);
+					while (getchar() != '\n');
+
+					//Confirmar se deseja apagar e puxar tudo 1 para cima.
+					if (intAux <= numeroLinhas)
+					{
+						do
+						{
+							printf("\nPRETENDE ELIMINAR A OPCAO %d? (Y/N)", intAux);
+							scanf("%c", &input2);
+							while (getchar() != '\n');
+
+							if (toupper(input2) == 'Y')
+							{
+								FILE *fModalidades;
+								modalidade a;
+
+								fModalidades = fopen("modalidades.txt", "w");
+
+								for (int j = 0; j < numeroLinhas; j++)
+								{
+									if (j >= intAux - 1)
+									{
+										a = mod[j + 1];
+										mod[j] = a;
+									}
+								}
+								fprintf(fModalidades, "%d- %s %d", 0, mod[0].nome, mod[0].maxpts);
+								for (int j = 1; j < numeroLinhas - 1; j++)
+								{
+									fprintf(fModalidades, "\n%d- %s %d", j, mod[j].nome, mod[j].maxpts);
+								}
+								fclose(fModalidades);
+								break;
+							}
+							else if (toupper(input2) == 'N')
+							{
+								break;
+							}
+						} while (1);
+					}
+
+
+					LimpaEcra();
+					break;
+				}
+				case '0':
+					break;
+				default:
+					printf("INTRODUZA UM VALOR VALIDO.\n");
+					LimpaEcra();
+					break;
+				}
+			} while (input2 != '0' && flag1 == 0);
 			break;
 		case '2':
 			//Criar e editar clubes (actualizar a lista de clubes com o criajogo)
+
+			/*int contadorDaSeed = 0;
+			int linhasFicheiro = FicheiroLinhas("clubes.txt");
+			for (int i = 0; i < linhasFicheiro; i++)
+			{
+				for (int j = 0; j < linhasFicheiro; j++)
+				{
+					if (i != j)
+					{
+						srand(SeedAleatoria() + contadorDaSeed);
+						//CriaJogo(modalidades[0], i, j);
+						//AtribuiResultado(modalidades[0], i, j);
+						contadorDaSeed++;
+					}
+				}
+			}*/
 			LimpaEcra();
 			break;
 		case '3':
@@ -311,7 +434,7 @@ jogo EscolheJogo(modalidade *mod)
 
 	//Escolher 1.
 }
-void CriaJogo(modalidade mod, int a, int b)
+void CriaJogo(modalidade *mod, int a, int b)
 {
 	FILE *fJogosLeitura, *fJogosEscrita;
 	clube clubAux1, clubAux2;
@@ -321,27 +444,27 @@ void CriaJogo(modalidade mod, int a, int b)
 	{
 		fJogosEscrita = fopen("jogos.txt", "a+");
 
-		if (mod.nome != "TENIS")
+		if (mod[0].nome != "TENIS")
 		{
 
 			if (feof(fJogosLeitura))
 			{
-				fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador + 1, mod.listaClubes[a].nome, mod.listaClubes[b].nome);
+				fprintf(fJogosEscrita, "%d- %s - %s\n", mod[0].identificador + 1, mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
 			}
 			else
 			{
 				while (!feof(fJogosLeitura))
 				{
 					fscanf(fJogosLeitura, "%d- %s- %s", &idAux, clubAux1.nome, clubAux2.nome);
-					if (idAux == mod.identificador + 1 && strcmp(clubAux1.nome, mod.listaClubes[a].nome) == 0 && strcmp(clubAux2.nome, mod.listaClubes[b].nome) == 0)
+					if (idAux == mod[0].identificador + 1 && strcmp(clubAux1.nome, mod[0].listaClubes[a].nome) == 0 && strcmp(clubAux2.nome, mod[0].listaClubes[b].nome) == 0)
 					{
 						//ESTA PARTE DO CODIGO PODE SER REMOVIDA SE FIZERMOS A FUNÇÃO SÓ CORRER UMA VEZ.
-						printf("AS DUAS EQUIPAS JA JOGARAM EM CASA DO %s\n", mod.listaClubes[a].nome);
+						printf("AS DUAS EQUIPAS JA JOGARAM EM CASA DO %s\n", mod[0].listaClubes[a].nome);
 						break;
 					}
 					else
 					{
-						fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador + 1, mod.listaClubes[a].nome, mod.listaClubes[b].nome);
+						fprintf(fJogosEscrita, "%d- %s - %s\n", mod[0].identificador + 1, mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
 						break;
 					}
 				}
@@ -350,7 +473,7 @@ void CriaJogo(modalidade mod, int a, int b)
 		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
 		else
 		{
-			fprintf(fJogosEscrita, "%d- %s - %s\n", mod.identificador, mod.listaClubes[a].nome, mod.listaClubes[b].nome);
+			fprintf(fJogosEscrita, "%d- %s - %s\n", mod[0].identificador, mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
 		}
 		fclose(fJogosEscrita);
 		fclose(fJogosLeitura);
@@ -458,7 +581,7 @@ float CalculaMediaGolos(void)
 		rewind(fResultados);
 		for (int i = 0; i < numeroLinhas; i++)
 		{
-			fscanf(fResultados, "%*d- %*s %d - %d %*s",&intAux1, &intAux2);
+			fscanf(fResultados, "%*d- %*s %d - %d %*s", &intAux1, &intAux2);
 			golostotais += intAux1 + intAux2;
 		}
 		/*while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
@@ -482,6 +605,6 @@ float CalculaMediaGolos(void)
 		}*/
 
 		fclose(fResultados);
-		return ((float) golostotais / (float) numeroLinhas);
+		return ((float)golostotais / (float)numeroLinhas);
 	}
 }
