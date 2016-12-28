@@ -7,7 +7,6 @@ void LimpaEcra(void)
 	getch();
 	system("cls");
 }
-
 void AtribuiResultado(modalidade m, int a, int b)
 {
 	FILE *fResultados, *fJogos;
@@ -272,6 +271,19 @@ int ValorRandomComBaseNaProb(clube a, int max)
 	}
 	return pontos;
 }
+/*void InverteArray(jogo arr[])
+{
+	jogo temp;
+	int inicio = 0, fim = sizeof(arr) / sizeof(int);
+	while (fim > inicio)
+	{
+		temp = arr[inicio];
+		arr[inicio] = arr[fim];
+		arr[fim] = temp;
+		inicio++;
+		fim--;
+	}
+}*/
 
 //A PRECISAR DE REWORK
 void Definicoes(modalidade *mod)
@@ -469,18 +481,55 @@ void Definicoes(modalidade *mod)
 }
 jogo EscolheJogo(modalidade *mod)
 {
-	//Trocar ordem dos elementos do array de jogos
+	int opcao, aux1 = 1, seed, guarda = 0, teste;
+	jogo um, dois, tres, quatro, cinco;
+	do
+	{
+		seed = SeedAleatoria();
+		srand(seed);
+		teste = sizeof(mod[0].listaJogos[1]);
+		guarda = rand() % sizeof(mod[0].listaJogos) / 136;
 
-	//Imprimir os 5 primeiros
+		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
+		for (int i = 0; i < 5; i++, aux1++)
+		{
+			printf("%d- %s - %s", aux1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);
+			if (i == 0) um = mod[0].listaJogos[guarda];
+			else if (i == 1) dois = mod[0].listaJogos[guarda];
+			else if (i == 2) tres = mod[0].listaJogos[guarda];
+			else if (i == 3) quatro = mod[0].listaJogos[guarda];
+			else cinco = mod[0].listaJogos[guarda];
+		}
+		scanf("OPCAO: ", &opcao);
 
-	//Escolher 1.
+		switch (opcao)
+		{
+		case 1:
+			return um;
+			break;
+		case 2:
+			return dois;
+			break;
+		case 3:
+			return tres;
+			break;
+		case 4:
+			return quatro;
+			break;
+		case 5:
+			return cinco;
+			break;
+		default:
+
+			break;
+		}
+	} while (opcao != 0);
 }
 void CriaJogo(modalidade *mod, int a, int b)
 {
 	FILE *fJogosLeitura, *fJogosEscrita;
 	clube clubAux1, clubAux2;
 	int idAux = 0;
-	//para o futebol e basquetebol assumi que funciona como na realidade, 2 equipas so podem jogar 2 vezes numa temporada, uma x na casa de cada 1
 	if (FicheiroExiste("jogos.txt", &fJogosLeitura))
 	{
 		fJogosEscrita = fopen("jogos.txt", "a+");
@@ -499,8 +548,6 @@ void CriaJogo(modalidade *mod, int a, int b)
 					fscanf(fJogosLeitura, "%d- %s- %s", &idAux, clubAux1.nome, clubAux2.nome);
 					if (idAux == mod[0].identificador + 1 && strcmp(clubAux1.nome, mod[0].listaClubes[a].nome) == 0 && strcmp(clubAux2.nome, mod[0].listaClubes[b].nome) == 0)
 					{
-						//ESTA PARTE DO CODIGO PODE SER REMOVIDA SE FIZERMOS A FUNÇÃO SÓ CORRER UMA VEZ.
-						printf("AS DUAS EQUIPAS JA JOGARAM EM CASA DO %s\n", mod[0].listaClubes[a].nome);
 						break;
 					}
 					else
@@ -511,7 +558,6 @@ void CriaJogo(modalidade *mod, int a, int b)
 				}
 			}
 		}
-		//para o tenis assumi que podes jogar varias vezes com a mesma pessoa (cria sempre o jogo)
 		else
 		{
 			fprintf(fJogosEscrita, "%d- %s - %s\n", mod[0].identificador, mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
