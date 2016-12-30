@@ -271,6 +271,19 @@ int ValorRandomComBaseNaProb(clube a, int max)
 	}
 	return pontos;
 }
+long factorial(int n)
+{
+	if (n == 0)
+		return 1;
+	else
+		return(n * factorial(n - 1));
+}
+float regra3simples(float n, float a)
+{
+	float aux;
+	aux = (a * 100) / n;
+	return aux;
+}
 /*void InverteArray(jogo arr[])
 {
 	jogo temp;
@@ -655,12 +668,12 @@ int CalculaDifGolos(modalidade m, int a, int ultimos) //falta definir que e so p
 	}
 	return golosMarcados - golosSofridos;
 }
-float CalculaMediaGolos(void)
+
+//tem de ler so a ultima epoca
+void CalculaMediaGolosCasa(modalidade *mod)
 {
 	FILE *fResultados;
-	//char *dividestr;
-	//char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
-	int golostotais = 0, intAux1, intAux2, numeroLinhas;
+	int goloscasa = 0, intAux, numeroLinhas;
 
 	if (FicheiroExiste("resultados.txt", &fResultados))
 	{
@@ -668,30 +681,111 @@ float CalculaMediaGolos(void)
 		rewind(fResultados);
 		for (int i = 0; i < numeroLinhas; i++)
 		{
-			fscanf(fResultados, "%*d- %*s %d - %d %*s", &intAux1, &intAux2);
-			golostotais += intAux1 + intAux2;
+			fscanf(fResultados, "%*d- %*s %d - %*d %*s", &intAux);
+			goloscasa += intAux;
 		}
-		/*while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
-		{
-			{
-				dividestr = _strdup(buffer);
-				dividestr = strtok(dividestr, "- \n");
-				strcpy(str1, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str2, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str3, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str4, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str5, dividestr);
-
-				tmp = atoi(str3) + atoi(str4);
-				golostotais += tmp;
-			}
-		}*/
-
 		fclose(fResultados);
-		return ((float)golostotais / (float)numeroLinhas);
+		mod[0].mediapts_casa = ((float)goloscasa / (float)numeroLinhas);
 	}
 }
+void CalculaMediaGolosFora(modalidade *mod)
+{
+	FILE *fResultados;
+	int golosfora = 0, intAux, numeroLinhas;
+
+	if (FicheiroExiste("resultados.txt", &fResultados))
+	{
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		rewind(fResultados);
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %*s %*d - %d %*s", &intAux);
+			golosfora += intAux;
+		}
+		fclose(fResultados);
+		mod[0].mediapts_fora = ((float)golosfora / (float)numeroLinhas);
+	}
+}
+
+void CalculaAtteDef(modalidade *mod, int a)
+{
+	FILE *fResultados;
+	int golosfora = 0, goloscasa = 0, golossofridoscasa = 0, golossofridosfora = 0, jogoscasa = 0, jogosfora = 0, intAux1, intAux2, numeroLinhas;
+	char nomeAux1[20], nomeAux2[20];
+	float media;
+
+	if (FicheiroExiste("resultados.txt", &fResultados))
+	{
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		rewind(fResultados);
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %s %d - %d %s", nomeAux1, &intAux1, &intAux2, nomeAux2); //se n der com fscanf dps reformulo pa fgets com a divisao em 4 strings
+			if (strcmp(nomeAux1, mod[0].listaClubes[a].nome) == 0)
+			{
+				golossofridoscasa += intAux2;
+				goloscasa += intAux1;
+				jogoscasa++;
+			}
+			else if (strcmp(nomeAux2, mod[0].listaClubes[a].nome) == 0)
+			{
+				golossofridosfora += intAux1;
+				golosfora += intAux2;
+				jogosfora++;
+			}
+		}
+		fclose(fResultados);
+		media = ((float)goloscasa / (float)jogoscasa);
+		mod[0].listaClubes[a].ataque_casa = media / mod[0].mediapts_casa;
+		media = ((float)golosfora / (float)jogosfora);
+		mod[0].listaClubes[a].ataque_fora = media / mod[0].mediapts_fora;
+		media = ((float)golossofridoscasa / (float)jogoscasa);
+		mod[0].listaClubes[a].defesa_casa = media / mod[0].mediapts_fora;
+		media = ((float)golossofridosfora / (float)jogosfora);
+		mod[0].listaClubes[a].defesa_fora = media / mod[0].mediapts_casa;
+	}
+}
+void Poisson(modalidade *mod)
+{
+	FILE *fResultados;
+	int numeroLinhas = 0;
+	float lambda_c, lambda_f, normalizador_c = 0, normalizador_f = 0, aux;
+	numeroLinhas = FicheiroLinhas("resultados.txt");
+
+	for (int i = 0; i < numeroLinhas; i++)
+	{
+		lambda_c = mod[0].listaJogos[i].casa.ataque_casa * mod[0].listaJogos[i].visitante.defesa_fora * mod[0].mediapts_casa;
+		lambda_f = mod[0].listaJogos[i].visitante.ataque_fora * mod[0].listaJogos[i].casa.defesa_casa * mod[0].mediapts_fora;
+
+		for (int j = 0; j <= mod[0].maxpts; j++)
+		{
+			mod[0].listaJogos[i].PoissonCasa[j] = (exp(-lambda_c) * pow(lambda_c, j)) / factorial(mod[0].maxpts);
+			normalizador_c += mod[0].listaJogos[i].PoissonCasa[j];
+			mod[0].listaJogos[i].PoissonFora[j] = (exp(-lambda_f) * pow(lambda_f, j)) / factorial(mod[0].maxpts);
+			normalizador_f += mod[0].listaJogos[i].PoissonFora[j];
+		}
+	}
+
+	for (int i = 0; i < numeroLinhas; i++)
+	{
+		for (int j = 0; j <= mod[0].maxpts; j++)
+		{
+			aux = regra3simples(normalizador_c, mod[0].listaJogos[i].PoissonCasa[j]);
+			mod[0].listaJogos[i].PoissonCasa[j] = aux;
+			aux = regra3simples(normalizador_f, mod[0].listaJogos[i].PoissonFora[j]);
+			mod[0].listaJogos[i].PoissonFora[j] = aux;
+		}
+	}
+
+}
+void CalculaOddsIniciais(modalidade *mod, int a) // ja acabo
+{
+	float empate, vitoria;
+	
+	for (int i = 0; i <= mod[0].maxpts; i++)
+	{
+		vitoria += mod[0].listaJogos[a].PoissonCasa[i] * mod[0].listaJogos[a].PoissonFora[i + 1];
+	}
+
+}
+
