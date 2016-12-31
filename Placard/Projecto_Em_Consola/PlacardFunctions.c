@@ -112,47 +112,36 @@ void CriaJogos(modalidade *mod)
 		}
 	}
 }
-modalidade EscolheModalidade(modalidade *mod)
+modalidade EscolheModalidade(modalidade *mod, int *quantidade)
 {
 	char modalidade_introduzida[20] = { 0 }, charAux[20] = { 0 }, flag = 0;
-	int opcao = 0, intAux, numeroLinhas;
+	int opcao = 0;
 	modalidade modAux;
-	FILE *fModalidades;
 
-	if (FicheiroExiste("modalidades.txt", &fModalidades))
+	do
 	{
-		do
+		system("cls");
+		printf("MODALIDADE DA APOSTA:\n");
+
+		// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
+		for (int i = 0; i < *quantidade; i++)
 		{
-			system("cls");
-			printf("MODALIDADE DA APOSTA:\n");
+			printf("\t%d- %s \n", i + 1, mod[i].nome);
+		}
 
-			// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
-			numeroLinhas = FicheiroLinhas("modalidades.txt");
-			for (intAux = 0; intAux < numeroLinhas; intAux++)
-			{
-				printf("\t%d- %s \n", intAux + 1, mod[intAux].nome);
-			}
+		printf("\t0- VOLTAR ATRAS\n");
+		printf("OPCAO: ");
+		scanf("%d", &opcao);
+		while (getchar() != '\n');
 
-			printf("\t0- VOLTAR ATRAS\n");
-			printf("OPCAO: ");
-			scanf("%d", &opcao);
-			while (getchar() != '\n');
+		// Ler modalidade escolhida
+		if (opcao > 0 && opcao <= *quantidade)
+		{
+			modAux = mod[opcao - 1];
+			flag = 1;
+		}
+	} while (opcao != 0 && flag == 0);
 
-			// USAR UM LOOP PARA IMPRIMIR TODOS AS MODALIDADES
-
-			for (int i = 1; i <= numeroLinhas; i++)
-			{
-				fscanf(fModalidades, "%s", charAux);
-				if (opcao == i)
-				{
-					strcpy(modAux.nome, charAux);
-					flag = 1;
-					break;
-				}
-			}
-		} while (opcao != 0 && flag == 0);
-		fclose(fModalidades);
-	}
 	LimpaEcra();
 	return modAux;
 }
@@ -920,6 +909,43 @@ jogo EscolheJogo(modalidade *mod)
 		guarda = rand() % sizeof(mod[0].listaJogos) / 136;
 
 		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
+
+
+		//PARTE DO CODIGO QUE ADDEI
+		int numerosUsados[5] = {0}, flag;
+		for (int i = 0; i < 5; i++)
+		{
+			guarda = rand() % ((mod[0].listaJogosCount-1) - 0 + 1) + 0;
+			numerosUsados[i] = guarda;
+			do
+			{
+				flag = 0;
+				for (int j = 0; j < 5; j++)
+				{
+					if (numerosUsados[i] == numerosUsados[j] && i != j)
+					{
+						guarda = rand() % ((mod[0].listaJogosCount-1) - 0 + 1) + 0;
+						numerosUsados[i] = guarda;
+						flag = 1;
+						break;
+					}
+				}
+			} while (flag);			
+			printf("%d- %s - %s\n", i + 1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);
+		}
+
+		printf("0- CANCELAR\n\nOPCAO: ");
+		scanf("%d", &opcao);
+		while (getchar() != '\n');
+
+		if (opcao > 0 && opcao <= 5)
+		{
+			return mod[0].listaJogos[numerosUsados[opcao - 1]];
+		}
+
+		//ATE AQUI
+
+
 		for (int i = 0; i < 5; i++, aux1++)
 		{
 			printf("%d- %s - %s", aux1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);

@@ -5,7 +5,7 @@ int				CalculaDifGolos				(modalidade m, int a, int ultimos);
 float			CalculaMediaGolos			(void);
 void			Definicoes					(modalidade *mod, int *quantidade);
 jogo			EscolheJogo					(modalidade *mod);
-modalidade		EscolheModalidade			(modalidade *mod);
+modalidade		EscolheModalidade			(modalidade *mod, int *quantidade);
 void			FicheiroExiste				(char nomeficheiro[], FILE **fd);
 void			FicheiroImprimir			(char nomeficheiro[]);
 void			FicheiroLeData				(modalidade *mod, int *quantidadeMods);

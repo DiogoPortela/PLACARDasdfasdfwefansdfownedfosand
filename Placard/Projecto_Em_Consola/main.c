@@ -46,7 +46,7 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':	
-			modAux = EscolheModalidade(modalidades);
+			modAux = EscolheModalidade(modalidades, &modalidadesCount);
 			//pontos = CalculaMediaGolos();
 			//printf("%f\n", pontos);
 
