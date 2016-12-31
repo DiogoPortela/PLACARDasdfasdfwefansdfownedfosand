@@ -46,22 +46,6 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':	
-
-			int contadorDaSeed = 0;
-			for (int i = 0; i < modalidades[0].listaClubesCount; i++)
-			{
-				for (int j = 0; j < modalidades[0].listaClubesCount; j++)
-				{
-					if (i != j)
-					{
-						srand(SeedAleatoria() + contadorDaSeed);
-						AtribuiResultado(modalidades[0], i, j);
-						contadorDaSeed++;
-					}
-				}
-			}
-
-
 			modAux = EscolheModalidade(modalidades);
 			//pontos = CalculaMediaGolos();
 			//printf("%f\n", pontos);
@@ -84,7 +68,7 @@ int main(void) //Menu
 			ListarTudo();
 			break;
 		case '4':
-			Definicoes(&modalidades);
+			Definicoes(&modalidades, &modalidadesCount);
 			break;
 		case '0':
 			break;

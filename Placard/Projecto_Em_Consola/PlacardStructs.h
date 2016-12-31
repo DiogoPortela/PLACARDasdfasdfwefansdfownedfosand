@@ -6,6 +6,9 @@
 #include <time.h>
 #include <math.h>
 
+#define maximoClubes 20
+#define maximoJogos 320
+
 typedef	struct
 {
 	char nome[60];
@@ -27,8 +30,8 @@ typedef struct
 typedef struct
 {
 	char nome[60];
-	clube listaClubes[20];
-	jogo listaJogos[320];
+	clube listaClubes[maximoClubes];
+	jogo listaJogos[maximoJogos];
 	int listaClubesCount;
 	int listaJogosCount;
 	int maxpts;

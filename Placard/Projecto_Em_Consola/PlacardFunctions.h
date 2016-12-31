@@ -3,7 +3,7 @@ void			AtribuiResultado			(modalidade m, int a, int b);
 void			CriaJogos					(modalidade *mod);
 int				CalculaDifGolos				(modalidade m, int a, int ultimos);
 float			CalculaMediaGolos			(void);
-void			Definicoes					(modalidade *mod);
+void			Definicoes					(modalidade *mod, int *quantidade);
 jogo			EscolheJogo					(modalidade *mod);
 modalidade		EscolheModalidade			(modalidade *mod);
 void			FicheiroExiste				(char nomeficheiro[], FILE **fd);
