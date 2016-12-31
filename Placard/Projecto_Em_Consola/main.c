@@ -65,10 +65,10 @@ int main(void) //Menu
 			printf("%d %d\n", pontos, pontos2);*/
 			break;
 		case '3':
-			ListarTudo();
+			ListarTudo(modalidades, &modalidadesCount);
 			break;
 		case '4':
-			Definicoes(&modalidades, &modalidadesCount);
+			Definicoes(modalidades, &modalidadesCount);
 			break;
 		case '0':
 			break;

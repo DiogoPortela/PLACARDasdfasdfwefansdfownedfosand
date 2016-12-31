@@ -215,7 +215,7 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)
 				if (FicheiroExiste(nomeFicheiro, &fJogos))
 				{
 					mod[i].listaJogosCount = FicheiroLinhas(nomeFicheiro);
-					for (k = 0; k < mod[i].listaJogosCount - 1; k++)
+					for (k = 0; k < mod[i].listaJogosCount; k++)
 					{
 						fscanf(fJogos, "%s - %s", charAux, charAux2);
 						for (int l = 0; l < mod[i].listaClubesCount; l++)
@@ -285,9 +285,10 @@ void GerirSaldo(int *saldo)
 		fclose(fSaldoLeitura);
 	}
 }
-void ListarTudo()
+void ListarTudo(modalidade *mod, int *quantidade)
 {
-	char opcao = 0;
+	char opcao = 0, nomeFicheiro[200];
+	int inputInt;
 	system("cls");
 	do
 	{
@@ -302,19 +303,61 @@ void ListarTudo()
 
 		switch (opcao)
 		{
-		case '1':
+		case '1':	//Imprimir modalidades
+		{
 			FicheiroImprimir("modalidades.txt");
 			LimpaEcra();
 			break;
-		case'2':
-			FicheiroImprimir("clubes.txt");
+		}
+		case'2':	//Imprimir clubes
+		{
+			//Imprime todas a modalidades e escolhe uma
+			system("cls");
+			printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
+			for (int i = 0; i < *quantidade; i++)
+			{
+				printf("\t\t%d- %s\n", i + 1, mod[i]);
+			}
+			printf("\t\t0- SAIR\nOPCAO: ");
+			scanf("%d", &inputInt);
+			while (getchar() != '\n');
+
+			//Imprime todos os clubes
+
+			for (int i = 0; i < mod[inputInt - 1].listaClubesCount; i++)
+			{
+				printf("\n%s", mod[inputInt - 1].listaClubes[i].nome);
+			}
+
+			printf("\n");
 			LimpaEcra();
 			break;
-		case '3':
-			FicheiroImprimir("jogos.txt");
+		}
+		case '3':	//Imprimir jogos
+		{
+			//Imprime todas a modalidades e escolhe uma
+			system("cls");
+			printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
+			for (int i = 0; i < *quantidade; i++)
+			{
+				printf("\t\t%d- %s\n", i + 1, mod[i]);
+			}
+			printf("\t\t0- SAIR\nOPCAO: ");
+			scanf("%d", &inputInt);
+			while (getchar() != '\n');
+
+			//Imprime todos os jogos
+
+			for (int i = 0; i < mod[inputInt - 1].listaJogosCount; i++)
+			{
+				printf("\n%s - %s", mod[inputInt - 1].listaJogos[i].casa.nome, mod[inputInt - 1].listaJogos[i].visitante.nome);
+			}
+
+			printf("\n");
 			LimpaEcra();
 			break;
-		case '4':
+		}
+		case '4':	//Imprimir resultados
 			FicheiroImprimir("resultados.txt");
 			LimpaEcra();
 			break;
@@ -446,7 +489,7 @@ void Definicoes(modalidade *mod, int *quantidade)
 									mod[j] = modAux2;
 								}
 							}
-						}								
+						}
 
 						//Cria novo ficheiro onde guarda todos as modalidades
 						fModalidades = fopen("modalidades.txt", "w");
@@ -525,7 +568,7 @@ void Definicoes(modalidade *mod, int *quantidade)
 						rename(nomeFicheiroJogos, nomeFicheiroJogos2);
 
 						//Alterar Internamente
-						mod[inputInt -1] = modAux2;
+						mod[inputInt - 1] = modAux2;
 
 						//Alfabetizar as modalidades
 						for (int i = 0; i < *quantidade - 1; i++)
@@ -697,7 +740,7 @@ void Definicoes(modalidade *mod, int *quantidade)
 									fprintf(fClubes, "\n%s", mod[inputInt - 1].listaClubes[i].nome);
 								}
 								fclose(fClubes);
-								
+
 								//Actualizar Lista de Jogos
 								CriaJogos(&mod[inputInt - 1]);
 								break;
@@ -717,13 +760,13 @@ void Definicoes(modalidade *mod, int *quantidade)
 							}
 							printf("0- CANCELAR\n\nOPCAO: ");
 							scanf("%d", &inputInt2);
-							while (getchar() != '\n');	
+							while (getchar() != '\n');
 
 							//Verifica se input é valido
 							if (inputInt2 != 0 && inputInt2 <= mod[inputInt - 1].listaClubesCount)
 							{
 								printf("INTRODUZA O NOVO NOME DO CLUBE: ");
-								scanf("%s",charAux);
+								scanf("%s", charAux);
 								while (getchar() != '\n');
 
 								//Tornar em maisculas e guarda
