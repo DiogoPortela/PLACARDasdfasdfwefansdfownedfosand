@@ -29,6 +29,8 @@ typedef struct
 	char nome[60];
 	clube listaClubes[20];
 	jogo listaJogos[320];
+	int listaClubesCount;
+	int listaJogosCount;
 	int maxpts;
 	float mediapts_casa;
 	float mediapts_fora;
