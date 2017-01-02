@@ -156,6 +156,8 @@ int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado fichei
 	}
 	return 1;
 }
+
+//ESTA FUNCAO JA NAO SERVE DE MUITO
 void FicheiroImprimir(char nomeficheiro[])
 {
 	FILE *fAux;
@@ -174,6 +176,7 @@ void FicheiroImprimir(char nomeficheiro[])
 	printf("\n");
 	fclose(fAux);
 }
+
 void FicheiroLeData(modalidade *mod, int *quantidadeMods)
 {
 	int i, j, k, l;
@@ -257,20 +260,64 @@ int FicheiroLinhas(char nomeficheiro[])
 void GerirSaldo(int *saldo)
 {
 	FILE *fSaldoLeitura, *fSaldoEscrita;
+	int userInput, intAux;
+
+	system("cls");
 	if (FicheiroExiste("saldo.txt", &fSaldoLeitura))
 	{
-		if (getc(fSaldoLeitura) == -1)
+		if (FicheiroLinhas("saldo.txt") == 0)
 		{
+			do
+			{
+				printf("CARREGUE UM SALDO INCIAL: ");
+				scanf("%d", saldo);
+				while (getchar() != '\n');
+			} while (*saldo <= 0);
+
 			fSaldoEscrita = fopen("saldo.txt", "w");
-			printf("\nINTRODUZA UM VALOR INICIAL: ");
-			scanf("%d", saldo);
-			while (getchar() != '\n');
 			fprintf(fSaldoEscrita, "%d", *saldo);
 			fclose(fSaldoEscrita);
 		}
-		rewind(fSaldoLeitura);
-		fscanf(fSaldoLeitura, "%d", saldo);
-		printf("\nO SEU SALDO ACTUAL: %d\n", *saldo);
+		else
+		{
+			fscanf(fSaldoLeitura, "%d", saldo);
+			do
+			{
+				printf("O SEU SALDO ACTUAL: %d\n1- CARREGAR\n0- SAIR\n\nOPCAO: ", *saldo);
+				scanf("%d", &userInput);
+				while (getchar() != '\n');
+				switch (userInput)
+				{
+				case 1:
+				{
+					printf("VALOR A CARREGAR: ");
+					scanf("%d", &intAux);
+					while (getchar() != '\n');
+					if (intAux > 0)
+					{
+						*saldo = *saldo + intAux;
+						fSaldoEscrita = fopen("saldo.txt", "w");
+						fprintf(fSaldoEscrita, "%d", *saldo);
+						fclose(fSaldoEscrita);
+					}
+					else
+					{
+						printf("VALOR INTRODUZIDO INVALIDO.");
+					}
+					LimpaEcra();
+					break;
+				}
+				case 0:
+				{
+					break;
+				}
+				default:
+					printf("INTRODUZA UM VALOR VALIDO.");
+					LimpaEcra();
+					break;
+				}
+			} while (userInput != 0);
+		}
 		fclose(fSaldoLeitura);
 	}
 }
@@ -900,7 +947,8 @@ void Definicoes(modalidade *mod, int *quantidade)
 jogo EscolheJogo(modalidade *mod)
 {
 	int opcao, aux1 = 1, seed, guarda = 0, teste;
-	jogo um, dois, tres, quatro, cinco;
+	jogo jogoAux = { 0 };
+	//jogo um, dois, tres, quatro, cinco;
 	do
 	{
 		seed = SeedAleatoria();
@@ -912,10 +960,10 @@ jogo EscolheJogo(modalidade *mod)
 
 
 		//PARTE DO CODIGO QUE ADDEI
-		int numerosUsados[5] = {0}, flag;
+		int numerosUsados[5] = { 0 }, flag;
 		for (int i = 0; i < 5; i++)
 		{
-			guarda = rand() % ((mod[0].listaJogosCount-1) - 0 + 1) + 0;
+			guarda = rand() % ((mod[0].listaJogosCount - 1) - 0 + 1) + 0;
 			numerosUsados[i] = guarda;
 			do
 			{
@@ -924,13 +972,13 @@ jogo EscolheJogo(modalidade *mod)
 				{
 					if (numerosUsados[i] == numerosUsados[j] && i != j)
 					{
-						guarda = rand() % ((mod[0].listaJogosCount-1) - 0 + 1) + 0;
+						guarda = rand() % ((mod[0].listaJogosCount - 1) - 0 + 1) + 0;
 						numerosUsados[i] = guarda;
 						flag = 1;
 						break;
 					}
 				}
-			} while (flag);			
+			} while (flag);
 			printf("%d- %s - %s\n", i + 1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);
 		}
 
@@ -945,8 +993,7 @@ jogo EscolheJogo(modalidade *mod)
 
 		//ATE AQUI
 
-
-		for (int i = 0; i < 5; i++, aux1++)
+		/*for (int i = 0; i < 5; i++, aux1++)
 		{
 			printf("%d- %s - %s", aux1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);
 			if (i == 0) um = mod[0].listaJogos[guarda];
@@ -977,8 +1024,9 @@ jogo EscolheJogo(modalidade *mod)
 		default:
 
 			break;
-		}
+		}*/
 	} while (opcao != 0);
+	return jogoAux;
 }
 int CalculaDifGolos(modalidade m, int a, int ultimos) //falta definir que e so para os ultimos 6 jogos (como eq limitamos que sao as ultimas 6 leituras no texto?)
 {

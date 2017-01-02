@@ -6,7 +6,7 @@ int main(void) //Menu
 	char tecla_menu = 0;
 	modalidade modalidades[10], modAux;
 	jogo jogoAux;
-	int saldo, modalidadesCount, pontos, pontos2;
+	int saldo, modalidadesCount, valorAposta, pontos, pontos2;
 
 	FicheiroLeData(modalidades, &modalidadesCount);
 
@@ -53,6 +53,12 @@ int main(void) //Menu
 			//AQUI DEVE FAZER DISPLAY DOS JOGOS POSSIVEIS DE APOSTAR (ESCOLHER PRAI UNS 5 ALEATORIOS E CERTIFICAR QUE NAO ESCOHLE O MESMO
 			//JOGO DUAS VEZES DURANTE UMA TEMPORADA) E MOSTRAR A TAL COTA. NAO ESQUECER USAR O ARRAY DE JOGOS E AUMENTA-LO PARA MAIS MODALIDADES.
 			jogoAux = EscolheJogo(&modAux);
+			do
+			{
+				printf("QUANTIDADE A APOSTAR (1-100): ");
+				scanf("%d", &valorAposta);
+				while (getchar() != '\n');
+			} while (valorAposta <= 0 || valorAposta > 100);
 			//AQUI FAZ AQUELA PARTE TODA DE GERAR NUMEROS MUITO LINDA <3
 
 			//AQUI VERIFICA SE GANHOU PERDEU EMPATOU E ACTUALIZA O SALDO
