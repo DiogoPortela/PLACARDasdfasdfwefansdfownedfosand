@@ -1,7 +1,7 @@
 #include "PlacardStructs.h"
 
 //PRONTAS
-void LimpaEcra(void)
+void LimpaEcra(void)	//Apresenta uma mensagem antes de continuar e limpa o ecra
 {
 	printf("\nCARREGUE QUALQUER TECLA PARA CONTINUAR...");
 	getch();
@@ -34,75 +34,29 @@ void AtribuiResultado(modalidade m, int a, int b)
 		fclose(fResultados);
 	}
 }
-void CriaJogos(modalidade *mod)
+void CriaJogos(modalidade *mod)	//Gera todos jogos possiveis associados a uma modalidade
 {
 	FILE *fJogos;
 	char nomeFicheiro[200];
 
-	//FILE *fJogosLeitura, *fJogosEscrita;
-	//clube clubAux1, clubAux2;
-	//int numeroLinhas;
-
+	//Adiciona o sufixo ao nome do ficheiro
 	strcpy(nomeFicheiro, mod[0].nome);
 	strcat(nomeFicheiro, "-jogos.txt");
 
-	/*if (FicheiroExiste(nomeFicheiro, &fJogosLeitura))
-	{
-	numeroLinhas = FicheiroLinhas(nomeFicheiro);
-	fJogosEscrita = fopen(nomeFicheiro, "a+");
-	for (int a = 0; a < nomeFicheiro; a++)
-	{
-	for (int b = 0; b < nomeFicheiro; b++)
-	{
-	if (a != b)
-	{
-	if (mod[0].nome != "TENIS")
-	{
-
-	if (feof(fJogosLeitura))
-	{
-	fprintf(fJogosEscrita, "%s - %s", mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
-	}
-	else
-	{
-	while (!feof(fJogosLeitura))
-	{
-	fscanf(fJogosLeitura, "%s- %s", clubAux1.nome, clubAux2.nome);
-	if (strcmp(clubAux1.nome, mod[0].listaClubes[a].nome) == 0 && strcmp(clubAux2.nome, mod[0].listaClubes[b].nome) == 0)
-	{
-	break;
-	}
-	else
-	{
-	fprintf(fJogosEscrita, "\n%s - %s", mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
-	break;
-	}
-	}
-	}
-	}
-	else
-	{
-	fprintf(fJogosEscrita, "%s - %s\n", mod[0].listaClubes[a].nome, mod[0].listaClubes[b].nome);
-	}
-	}
-	}
-	}
-
-	fclose(fJogosEscrita);
-	fclose(fJogosLeitura);
-	}*/
-
+	//Gera todos os jogos
 	fJogos = fopen(nomeFicheiro, "w");
 	for (int i = 0; i < mod[0].listaClubesCount; i++)
 	{
 		for (int j = 0; j < mod[0].listaClubesCount; j++)
 		{
+			//Gera o primeiro jogo do ficheiro
 			if (i == 0 && j == 1)
 			{
 				fprintf(fJogos, "%s - %s", mod[0].listaClubes[i], mod[0].listaClubes[j]);
 				mod[0].listaJogos[0].casa = mod[0].listaClubes[i];
 				mod[0].listaJogos[0].visitante = mod[0].listaClubes[j];
 			}
+			//Gera o resto dos jogos
 			else if (i != j)
 			{
 				fprintf(fJogos, "\n%s - %s", mod[0].listaClubes[i], mod[0].listaClubes[j]);
@@ -112,7 +66,7 @@ void CriaJogos(modalidade *mod)
 		}
 	}
 }
-modalidade EscolheModalidade(modalidade *mod, int *quantidade)
+modalidade EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha de uma modalidade e devolve-a
 {
 	char modalidade_introduzida[20] = { 0 }, charAux[20] = { 0 }, flag = 0;
 	int opcao = 0;
@@ -121,9 +75,8 @@ modalidade EscolheModalidade(modalidade *mod, int *quantidade)
 	do
 	{
 		system("cls");
+		//Imprime todas as modalidades
 		printf("MODALIDADE DA APOSTA:\n");
-
-		// LOOP QUE IMPRIME TODAS AS MODALIDADES APARTIR DO FICHEIRO
 		for (int i = 0; i < *quantidade; i++)
 		{
 			printf("\t%d- %s \n", i + 1, mod[i].nome);
@@ -134,7 +87,7 @@ modalidade EscolheModalidade(modalidade *mod, int *quantidade)
 		scanf("%d", &opcao);
 		while (getchar() != '\n');
 
-		// Ler modalidade escolhida
+		//Verifica se o input esta dentro dos limites e guarda a modalidade escolhida
 		if (opcao > 0 && opcao <= *quantidade)
 		{
 			modAux = mod[opcao - 1];
@@ -177,7 +130,7 @@ void FicheiroImprimir(char nomeficheiro[])
 	fclose(fAux);
 }
 
-void FicheiroLeData(modalidade *mod, int *quantidadeMods)
+void FicheiroLeData(modalidade *mod, int *quantidadeMods)	//Le os ficheiros para memoria
 {
 	int i, j, k, l;
 	char charAux[100], charAux2[100];
@@ -186,14 +139,18 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)
 
 	if (FicheiroExiste("modalidades.txt", &fModalidades))
 	{
+		//Guarda a quantidade de modalidades
 		*quantidadeMods = FicheiroLinhas("modalidades.txt");
 		for (i = 0; i < *quantidadeMods; i++)
 		{
+			//Para cada linha do ficheiro guarda uma modalidade em memoria
 			fscanf(fModalidades, "%s %d", &mod[i].nome, &mod[i].maxpts);
+
 			strcpy(nomeFicheiro, mod[i].nome);
 			strcat(nomeFicheiro, "-clubes.txt");
 			if (FicheiroExiste(nomeFicheiro, &fClubes))
 			{
+				//Procura se a modalidade tem clubes e adiciona em memoria à lista de clubes
 				mod[i].listaClubesCount = FicheiroLinhas(nomeFicheiro);
 				for (j = 0; j < mod[i].listaClubesCount; j++)
 				{
@@ -203,9 +160,9 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)
 
 				strcpy(nomeFicheiro, mod[i].nome);
 				strcat(nomeFicheiro, "-jogos.txt");
-
 				if (FicheiroExiste(nomeFicheiro, &fJogos))
 				{
+					//Prcura se ha jogos associados a modalidade e adiciona em memoria
 					mod[i].listaJogosCount = FicheiroLinhas(nomeFicheiro);
 					for (k = 0; k < mod[i].listaJogosCount; k++)
 					{
@@ -231,7 +188,7 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)
 		fclose(fModalidades);
 	}
 }
-int FicheiroLinhas(char nomeficheiro[])
+int FicheiroLinhas(char nomeficheiro[])	//Devolve a quantidade de linha existentes num ficheiro.
 {
 	FILE *fAux;
 	int linhas = 1, letra;
@@ -257,7 +214,7 @@ int FicheiroLinhas(char nomeficheiro[])
 	fclose(fAux);
 	return linhas;
 }
-void GerirSaldo(int *saldo)
+void GerirSaldo(int *saldo)	//Da ao utilizador o seu saldo e permite carrega-lo
 {
 	FILE *fSaldoLeitura, *fSaldoEscrita;
 	int userInput, intAux;
@@ -267,6 +224,7 @@ void GerirSaldo(int *saldo)
 	{
 		if (FicheiroLinhas("saldo.txt") == 0)
 		{
+			//Se nao houver ficheiro pede uma carregamento inicial
 			do
 			{
 				printf("CARREGUE UM SALDO INCIAL: ");
@@ -280,6 +238,7 @@ void GerirSaldo(int *saldo)
 		}
 		else
 		{
+			//Apresenta a possibilidade de carregar saldo
 			fscanf(fSaldoLeitura, "%d", saldo);
 			do
 			{
@@ -321,7 +280,7 @@ void GerirSaldo(int *saldo)
 		fclose(fSaldoLeitura);
 	}
 }
-void ListarTudo(modalidade *mod, int *quantidade)
+void ListarTudo(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha do que pretende ver listado, modalidades, clubes, jogos e resultados
 {
 	char opcao = 0, nomeFicheiro[200];
 	int inputInt;
@@ -460,7 +419,7 @@ float regra3simples(float n, float a)
 
 //A PRECISAR DE REWORK
 
-void Definicoes(modalidade *mod, int *quantidade)
+void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiçoes que pode alterar
 {
 	FILE *fModalidades, *fJogos, *fClubes;
 	char input, input2, input3, YN;
@@ -944,22 +903,19 @@ void Definicoes(modalidade *mod, int *quantidade)
 
 	} while (input != '0');
 }
-jogo EscolheJogo(modalidade *mod)
+jogo EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre varios
 {
-	int opcao, aux1 = 1, seed, guarda = 0, teste;
+	int opcao, seed, guarda = 0;
 	jogo jogoAux = { 0 };
-	//jogo um, dois, tres, quatro, cinco;
+
 	do
 	{
 		seed = SeedAleatoria();
 		srand(seed);
-		teste = sizeof(mod[0].listaJogos[1]);
-		guarda = rand() % sizeof(mod[0].listaJogos) / 136;
 
 		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
-
-
-		//PARTE DO CODIGO QUE ADDEI
+		 
+		//Imprime alguns jogos escolhidos aleatoriamente
 		int numerosUsados[5] = { 0 }, flag;
 		for (int i = 0; i < 5; i++)
 		{
@@ -967,6 +923,7 @@ jogo EscolheJogo(modalidade *mod)
 			numerosUsados[i] = guarda;
 			do
 			{
+				//Confima que o valor random ainda nao foi usado, para nao sairem 2x o mesmo jogo
 				flag = 0;
 				for (int j = 0; j < 5; j++)
 				{
@@ -982,6 +939,7 @@ jogo EscolheJogo(modalidade *mod)
 			printf("%d- %s - %s\n", i + 1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);
 		}
 
+		//Le o input do utilizador e retorna o jogo escolhido
 		printf("0- CANCELAR\n\nOPCAO: ");
 		scanf("%d", &opcao);
 		while (getchar() != '\n');
@@ -991,40 +949,6 @@ jogo EscolheJogo(modalidade *mod)
 			return mod[0].listaJogos[numerosUsados[opcao - 1]];
 		}
 
-		//ATE AQUI
-
-		/*for (int i = 0; i < 5; i++, aux1++)
-		{
-			printf("%d- %s - %s", aux1, mod[0].listaJogos[guarda].casa.nome, mod[0].listaJogos[guarda].visitante.nome);
-			if (i == 0) um = mod[0].listaJogos[guarda];
-			else if (i == 1) dois = mod[0].listaJogos[guarda];
-			else if (i == 2) tres = mod[0].listaJogos[guarda];
-			else if (i == 3) quatro = mod[0].listaJogos[guarda];
-			else cinco = mod[0].listaJogos[guarda];
-		}
-		scanf("OPCAO: ", &opcao);
-
-		switch (opcao)
-		{
-		case 1:
-			return um;
-			break;
-		case 2:
-			return dois;
-			break;
-		case 3:
-			return tres;
-			break;
-		case 4:
-			return quatro;
-			break;
-		case 5:
-			return cinco;
-			break;
-		default:
-
-			break;
-		}*/
 	} while (opcao != 0);
 	return jogoAux;
 }

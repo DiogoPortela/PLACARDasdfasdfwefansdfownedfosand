@@ -47,11 +47,6 @@ int main(void) //Menu
 			break;
 		case '2':	
 			modAux = EscolheModalidade(modalidades, &modalidadesCount);
-			//pontos = CalculaMediaGolos();
-			//printf("%f\n", pontos);
-
-			//AQUI DEVE FAZER DISPLAY DOS JOGOS POSSIVEIS DE APOSTAR (ESCOLHER PRAI UNS 5 ALEATORIOS E CERTIFICAR QUE NAO ESCOHLE O MESMO
-			//JOGO DUAS VEZES DURANTE UMA TEMPORADA) E MOSTRAR A TAL COTA. NAO ESQUECER USAR O ARRAY DE JOGOS E AUMENTA-LO PARA MAIS MODALIDADES.
 			jogoAux = EscolheJogo(&modAux);
 			do
 			{
@@ -65,10 +60,6 @@ int main(void) //Menu
 
 
 			printf("SIMULACAO CONCLUIDA!\n");
-
-			/*pontos = CalculaDifGolos(modalidades[0], 0);
-			pontos2 = CalculaDifGolos(modalidades[0], 1);
-			printf("%d %d\n", pontos, pontos2);*/
 			break;
 		case '3':
 			ListarTudo(modalidades, &modalidadesCount);
