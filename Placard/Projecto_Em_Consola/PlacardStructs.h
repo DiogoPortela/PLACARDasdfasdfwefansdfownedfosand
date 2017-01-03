@@ -20,8 +20,8 @@ typedef	struct
 
 typedef struct
 {
-	clube casa;
-	clube visitante;
+	clube *casa;
+	clube *visitante;
 	float PoissonCasa[120];
 	float PoissonFora[120];
 	float oddCasa, oddEmpate, oddVisitante;
