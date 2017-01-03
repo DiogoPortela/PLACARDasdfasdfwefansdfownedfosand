@@ -52,25 +52,26 @@ void CriaJogos(modalidade *mod)	//Gera todos jogos possiveis associados a uma mo
 			//Gera o primeiro jogo do ficheiro
 			if (i == 0 && j == 1)
 			{
-				fprintf(fJogos, "%s - %s", mod[0].listaClubes[i], mod[0].listaClubes[j]);
 				mod[0].listaJogos[0].casa = mod[0].listaClubes[i];
 				mod[0].listaJogos[0].visitante = mod[0].listaClubes[j];
+				fprintf(fJogos, "%s - %s $f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[0].oddCasa, mod[0].listaJogos[0].oddEmpate, mod[0].listaJogos[0].oddVisitante);
+
 			}
 			//Gera o resto dos jogos
 			else if (i != j)
 			{
-				fprintf(fJogos, "\n%s - %s", mod[0].listaClubes[i], mod[0].listaClubes[j]);
 				mod[0].listaJogos[(i + 1) * (j + 1)].casa = mod[0].listaClubes[i];
 				mod[0].listaJogos[(i + 1) * (j + 1)].visitante = mod[0].listaClubes[j];
+				fprintf(fJogos, "\n%s - %s $f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[(i + 1) * (j + 1)].oddCasa, mod[0].listaJogos[(i + 1) * (j + 1)].oddEmpate, mod[0].listaJogos[(i + 1) * (j + 1)].oddVisitante);
+
 			}
 		}
 	}
 }
-modalidade EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha de uma modalidade e devolve-a
+int EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha de uma modalidade e devolve-a
 {
-	char modalidade_introduzida[20] = { 0 }, charAux[20] = { 0 }, flag = 0;
+	char modalidade_introduzida[20] = { 0 }, charAux[20] = { 0 };
 	int opcao = 0;
-	modalidade modAux;
 
 	do
 	{
@@ -90,13 +91,12 @@ modalidade EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizado
 		//Verifica se o input esta dentro dos limites e guarda a modalidade escolhida
 		if (opcao > 0 && opcao <= *quantidade)
 		{
-			modAux = mod[opcao - 1];
-			flag = 1;
+			return opcao - 1;
 		}
-	} while (opcao != 0 && flag == 0);
+	} while (opcao != 0);
 
 	LimpaEcra();
-	return modAux;
+	return -1;
 }
 int FicheiroExiste(char nomeficheiro[], FILE **fd) //testa se determinado ficheiro existe
 {
@@ -394,19 +394,185 @@ float regra3simples(float n, float a)
 	aux = (a * 100) / n;
 	return aux;
 }
-/*void InverteArray(jogo arr[])
+//tem de ler so a ultima epoca
+void CalculaMediaGolosCasa(modalidade *mod)
 {
-	jogo temp;
-	int inicio = 0, fim = sizeof(arr) / sizeof(int);
-	while (fim > inicio)
+	FILE *fResultados;
+	int goloscasa = 0, intAux, numeroLinhas;
+
+	if (FicheiroExiste("resultados.txt", &fResultados))
 	{
-		temp = arr[inicio];
-		arr[inicio] = arr[fim];
-		arr[fim] = temp;
-		inicio++;
-		fim--;
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		rewind(fResultados);
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %*s %d - %*d %*s", &intAux);
+			goloscasa += intAux;
+		}
+		fclose(fResultados);
+		mod[0].mediapts_casa = ((float)goloscasa / (float)numeroLinhas);
 	}
-}*/
+}
+void CalculaMediaGolosFora(modalidade *mod)
+{
+	FILE *fResultados;
+	int golosfora = 0, intAux, numeroLinhas;
+
+	if (FicheiroExiste("resultados.txt", &fResultados))
+	{
+		numeroLinhas = FicheiroLinhas("resultados.txt");
+		rewind(fResultados);
+		for (int i = 0; i < numeroLinhas; i++)
+		{
+			fscanf(fResultados, "%*d- %*s %*d - %d %*s", &intAux);
+			golosfora += intAux;
+		}
+		fclose(fResultados);
+		mod[0].mediapts_fora = ((float)golosfora / (float)numeroLinhas);
+	}
+}
+
+void CalculaAtteDef(modalidade *mod)
+{
+	FILE *fResultados;
+	int golosfora = 0, goloscasa = 0, golossofridoscasa = 0, golossofridosfora = 0, jogoscasa = 0, jogosfora = 0, intAux1, intAux2, numeroLinhas;
+	char nomeAux1[20], nomeAux2[20], nomeFicheiro[200];
+	float media;
+
+	strcpy(nomeFicheiro, mod[0].nome);
+	strcat(nomeFicheiro, "-resultados.txt");
+	if (FicheiroExiste(nomeFicheiro, &fResultados))
+	{
+		numeroLinhas = FicheiroLinhas(nomeFicheiro);
+		rewind(fResultados);
+		for (int indexClube = 0; indexClube <= mod[0].listaClubesCount; indexClube++)
+		{
+			for (int i = 0; i < numeroLinhas; i++)
+			{
+				fscanf(fResultados, "%*d- %s %d - %d %s", nomeAux1, &intAux1, &intAux2, nomeAux2); //se n der com fscanf dps reformulo pa fgets com a divisao em 4 strings
+				if (strcmp(nomeAux1, mod[0].listaClubes[indexClube].nome) == 0)
+				{
+					golossofridoscasa += intAux2;
+					goloscasa += intAux1;
+					jogoscasa++;
+				}
+				else if (strcmp(nomeAux2, mod[0].listaClubes[indexClube].nome) == 0)
+				{
+					golossofridosfora += intAux1;
+					golosfora += intAux2;
+					jogosfora++;
+				}
+			}
+			media = ((float)goloscasa / (float)jogoscasa);
+			mod[0].listaClubes[indexClube].ataque_casa = media / mod[0].mediapts_casa;
+			media = ((float)golosfora / (float)jogosfora);
+			mod[0].listaClubes[indexClube].ataque_fora = media / mod[0].mediapts_fora;
+			media = ((float)golossofridoscasa / (float)jogoscasa);
+			mod[0].listaClubes[indexClube].defesa_casa = media / mod[0].mediapts_fora;
+			media = ((float)golossofridosfora / (float)jogosfora);
+			mod[0].listaClubes[indexClube].defesa_fora = media / mod[0].mediapts_casa;
+		}
+		fclose(fResultados);
+	}
+}
+void Poisson(modalidade *mod)
+{
+	FILE *fResultados;
+	int numeroLinhas = 0;
+	float lambda_c, lambda_f, normalizador_c = 0, normalizador_f = 0, aux;
+	numeroLinhas = FicheiroLinhas("resultados.txt");
+
+	for (int i = 0; i < numeroLinhas; i++)
+	{
+		lambda_c = mod[0].listaJogos[i].casa.ataque_casa * mod[0].listaJogos[i].visitante.defesa_fora * mod[0].mediapts_casa;
+		lambda_f = mod[0].listaJogos[i].visitante.ataque_fora * mod[0].listaJogos[i].casa.defesa_casa * mod[0].mediapts_fora;
+
+		for (int j = 0; j <= mod[0].maxpts; j++)
+		{
+			mod[0].listaJogos[i].PoissonCasa[j] = (exp(-lambda_c) * pow(lambda_c, j)) / factorial(mod[0].maxpts);
+			normalizador_c += mod[0].listaJogos[i].PoissonCasa[j];
+			mod[0].listaJogos[i].PoissonFora[j] = (exp(-lambda_f) * pow(lambda_f, j)) / factorial(mod[0].maxpts);
+			normalizador_f += mod[0].listaJogos[i].PoissonFora[j];
+		}
+	}
+
+	for (int i = 0; i < numeroLinhas; i++)
+	{
+		for (int j = 0; j <= mod[0].maxpts; j++)
+		{
+			aux = regra3simples(normalizador_c, mod[0].listaJogos[i].PoissonCasa[j]);
+			mod[0].listaJogos[i].PoissonCasa[j] = aux;
+			aux = regra3simples(normalizador_f, mod[0].listaJogos[i].PoissonFora[j]);
+			mod[0].listaJogos[i].PoissonFora[j] = aux;
+		}
+	}
+
+}
+void CalculaOddsIniciais(modalidade *mod)
+{
+	float empate = 0, vitoria = 0, somaaux = 0;
+
+	for (int indexJogo = 0; indexJogo <= mod[0].listaJogosCount; indexJogo++)
+	{
+		for (int i = 0; i <= mod[0].maxpts; i++)
+		{
+			for (int j = 0; j <= i; j++)
+			{
+				if (i == j)
+				{
+					empate += mod[0].listaJogos[indexJogo].PoissonCasa[i] * mod[0].listaJogos[indexJogo].PoissonFora[j];
+				}
+				else
+				{
+					somaaux += mod[0].listaJogos[indexJogo].PoissonFora[j];
+					vitoria += mod[0].listaJogos[indexJogo].PoissonCasa[i] * somaaux;
+				}
+			}
+		}
+		mod[0].listaJogos[indexJogo].oddCasa = vitoria;
+		mod[0].listaJogos[indexJogo].oddEmpate = empate;
+		mod[0].listaJogos[indexJogo].oddVisitante = 1 - vitoria - empate;
+	}
+}
+
+//se possivel juntar as 2 numa...
+int SimulaComBaseNasOddsCasa(modalidade *mod, int a)
+{
+	int aux;
+	float somaaux = 0;
+
+	srand(SeedAleatoria());
+	aux = rand() % 101;
+
+	int i = 0;
+	while (i <= mod[0].maxpts)
+	{
+		somaaux += mod[0].listaJogos[a].PoissonCasa[i];
+		if (aux < somaaux * 100)
+			return i;
+		else
+			i++;
+	}
+}
+int SimulaComBaseNasOddsFora(modalidade *mod, int a)
+{
+	int aux;
+	float somaaux = 0;
+
+	srand(SeedAleatoria());
+	aux = rand() % 101;
+
+	int i = 0;
+	while (i <= mod[0].maxpts)
+	{
+		somaaux += mod[0].listaJogos[a].PoissonFora[i];
+		if (aux < somaaux * 100)
+			return i;
+		else
+			i++;
+	}
+}
+
 
 //A PRECISAR DE REWORK
 
@@ -862,42 +1028,80 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 					printf("VALOR INTRODUZIDO INVALIDO\n");
 				}
 			} while (inputInt != 0);
-			/*int contadorDaSeed = 0;
-			int linhasFicheiro = FicheiroLinhas("clubes.txt");
-			for (int i = 0; i < linhasFicheiro; i++)
-			{
-				for (int j = 0; j < linhasFicheiro; j++)
-				{
-					if (i != j)
-					{
-						srand(SeedAleatoria() + contadorDaSeed);
-						//AtribuiResultado(modalidades[0], i, j);
-						contadorDaSeed++;
-					}
-				}
-			}*/
 			LimpaEcra();
 			break;
 		}
 		case '3':	//Alterar Cotas
 		{
-			LimpaEcra();
-			break;
-		}
-		case '0':
-			break;
-		default:
-			printf("INTRODUZA UM VALOR VALIDO.\n");
-			LimpaEcra();
-			break;
-		}
+			system("cls");
+			printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
+			for (int i = 0; i < *quantidade; i++)
+			{
+				printf("\t\t%d- %s\n", i + 1, mod[i]);
+			}
+			printf("\t\t0- SAIR\nOPCAO: ");
+			scanf("%d", &inputInt);
+			while (getchar() != '\n');
 
+			if (inputInt > 0 && inputInt < quantidade)
+			{
+				printf("\t\t1- RECALCULAR COTAS\n\t\t2- ALTERAS COTA INDIVIDUAL\n\t\t0- SAIR\n\nOPCAO: ");
+				scanf("%c", &input2);
+				while (getchar() != '\n');
+
+				switch (input2)
+				{
+				case '1':
+				{
+					//Apaga o ficheiro
+					strcpy(nomeFicheiro, mod[input2 - 1].nome);
+					strcat(nomeFicheiro, "-resultados.txt");
+					remove(nomeFicheiro);
+
+					int contadorDaSeed = 0;
+					for (int i = 0; i < mod[input2 - 1].listaJogosCount; i++)
+					{
+						for (int j = 0; j < mod[input2 - 1].listaJogosCount; j++)
+						{
+							if (i != j)
+							{
+								srand(SeedAleatoria() + contadorDaSeed);
+								AtribuiResultado(mod[input2 - 1], i, j);
+								contadorDaSeed++;
+							}
+						}
+					}
+					CalculaMediaGolosCasa(&mod[input2 - 1]);
+					CalculaMediaGolosFora(&mod[input2 - 1]);
+					CalculaAtteDef(&mod[input2 - 1]);
+					Poisson(&mod[input2 - 1]);
+					CalculaOddsIniciais(&mod[input2 - 1]);
+					CriaJogos(&mod[input2 - 1]);
+					break;
+				}
+				case '2':
+				{
+					break;
+				}
+				case '0':
+				{
+					break;
+				}
+				default:
+					printf("INTRODUZA UM VALOR VALIDO");
+					break;
+				}
+				LimpaEcra();
+				break;
+			}
+
+		}
+		}
 	} while (input != '0');
 }
-jogo EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre varios
+int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre varios
 {
 	int opcao, seed, guarda = 0;
-	jogo jogoAux = { 0 };
 
 	do
 	{
@@ -905,7 +1109,7 @@ jogo EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre 
 		srand(seed);
 
 		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
-		 
+
 		//Imprime alguns jogos escolhidos aleatoriamente
 
 
@@ -940,270 +1144,23 @@ jogo EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre 
 
 		if (opcao > 0 && opcao <= 5)
 		{
-			return mod[0].listaJogos[numerosUsados[opcao - 1]];
+			return numerosUsados[opcao - 1];
 		}
 
 	} while (opcao != 0);
-	return jogoAux;
+	return -1;
 }
-int CalculaDifGolos(modalidade m, int a, int ultimos) //falta definir que e so para os ultimos 6 jogos (como eq limitamos que sao as ultimas 6 leituras no texto?)
+void GereJogo(modalidade *mod, int *quantidade)
 {
-	FILE *fResultados;
-	//char *dividestr;
-	//char buffer[66], str1[2], str2[30], str3[2], str4[2], str5[30];
-	int golosMarcados = 0, golosSofridos = 0, numeroLinhas, numeroClube = 0, intAux1, intAux2;
-	char nomeClube1[60], nomeClube2[60];
+	int indexModalidade, indexJogo, valorAposta;
 
-	if (FicheiroExiste("resultados.txt", &fResultados))
+	indexModalidade = EscolheModalidade(mod, quantidade);
+	indexJogo = EscolheJogo(&mod[indexModalidade]);
+
+	do
 	{
-		numeroLinhas = FicheiroLinhas("resultados.txt");
-		rewind(fResultados);
-		for (int i = 0; i < numeroLinhas; i++)
-		{
-			fscanf(fResultados, "%*d- %s %d - %d %s", nomeClube1, &intAux1, &intAux2, nomeClube2);
-			if (!strcmp(nomeClube1, m.listaClubes[a].nome))
-			{
-				numeroClube++;
-			}
-			else if (!strcmp(nomeClube2, m.listaClubes[a].nome))
-			{
-				numeroClube++;
-			}
-		}
-
-		if (ultimos == 0)
-		{
-			ultimos = numeroClube;
-		}
-
-		rewind(fResultados);
-		numeroLinhas = FicheiroLinhas("resultados.txt");
-		for (int i = 0; i < numeroLinhas; i++)
-		{
-			fscanf(fResultados, "%*d- %s %d - %d %s", nomeClube1, &intAux1, &intAux2, nomeClube2);
-			if (!strcmp(nomeClube1, m.listaClubes[a].nome))
-			{
-				numeroClube--;
-				if (numeroClube > ultimos)
-				{
-					golosMarcados += intAux1;
-					golosSofridos += intAux2;
-				}
-			}
-			else if (!strcmp(nomeClube2, m.listaClubes[a].nome))
-			{
-				numeroClube--;
-				if (numeroClube > ultimos)
-				{
-					golosMarcados += intAux2;
-					golosSofridos += intAux1;
-				}
-			}
-		}
-		/*while (fgets(buffer, sizeof(buffer), fresultados) != NULL)
-		{
-			if (strstr(buffer, m.listaClubes[a].nome) != NULL)
-			{
-				dividestr = _strdup(buffer);
-				dividestr = strtok(dividestr, "- \n");
-				strcpy(str1, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str2, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str3, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str4, dividestr);
-				dividestr = strtok(NULL, "- \n");
-				strcpy(str5, dividestr);
-				if (strcmp(str2, m.listaClubes[a].nome) == 0)
-				{
-					tmp = atoi(str3);
-					golosmarcados += tmp;
-					tmp = atoi(str4);
-					golossofridos += tmp;
-				}
-				else
-				{
-					tmp = atoi(str4);
-					golosmarcados += tmp;
-					tmp = atoi(str3);
-					golossofridos += tmp;
-				}
-			}
-		}*/
-		fclose(fResultados);
-	}
-	return golosMarcados - golosSofridos;
-}
-
-//tem de ler so a ultima epoca
-void CalculaMediaGolosCasa(modalidade *mod)
-{
-	FILE *fResultados;
-	int goloscasa = 0, intAux, numeroLinhas;
-
-	if (FicheiroExiste("resultados.txt", &fResultados))
-	{
-		numeroLinhas = FicheiroLinhas("resultados.txt");
-		rewind(fResultados);
-		for (int i = 0; i < numeroLinhas; i++)
-		{
-			fscanf(fResultados, "%*d- %*s %d - %*d %*s", &intAux);
-			goloscasa += intAux;
-		}
-		fclose(fResultados);
-		mod[0].mediapts_casa = ((float)goloscasa / (float)numeroLinhas);
-	}
-}
-void CalculaMediaGolosFora(modalidade *mod)
-{
-	FILE *fResultados;
-	int golosfora = 0, intAux, numeroLinhas;
-
-	if (FicheiroExiste("resultados.txt", &fResultados))
-	{
-		numeroLinhas = FicheiroLinhas("resultados.txt");
-		rewind(fResultados);
-		for (int i = 0; i < numeroLinhas; i++)
-		{
-			fscanf(fResultados, "%*d- %*s %*d - %d %*s", &intAux);
-			golosfora += intAux;
-		}
-		fclose(fResultados);
-		mod[0].mediapts_fora = ((float)golosfora / (float)numeroLinhas);
-	}
-}
-
-void CalculaAtteDef(modalidade *mod, int a)
-{
-	FILE *fResultados;
-	int golosfora = 0, goloscasa = 0, golossofridoscasa = 0, golossofridosfora = 0, jogoscasa = 0, jogosfora = 0, intAux1, intAux2, numeroLinhas;
-	char nomeAux1[20], nomeAux2[20];
-	float media;
-
-	if (FicheiroExiste("resultados.txt", &fResultados))
-	{
-		numeroLinhas = FicheiroLinhas("resultados.txt");
-		rewind(fResultados);
-		for (int i = 0; i < numeroLinhas; i++)
-		{
-			fscanf(fResultados, "%*d- %s %d - %d %s", nomeAux1, &intAux1, &intAux2, nomeAux2); //se n der com fscanf dps reformulo pa fgets com a divisao em 4 strings
-			if (strcmp(nomeAux1, mod[0].listaClubes[a].nome) == 0)
-			{
-				golossofridoscasa += intAux2;
-				goloscasa += intAux1;
-				jogoscasa++;
-			}
-			else if (strcmp(nomeAux2, mod[0].listaClubes[a].nome) == 0)
-			{
-				golossofridosfora += intAux1;
-				golosfora += intAux2;
-				jogosfora++;
-			}
-		}
-		fclose(fResultados);
-		media = ((float)goloscasa / (float)jogoscasa);
-		mod[0].listaClubes[a].ataque_casa = media / mod[0].mediapts_casa;
-		media = ((float)golosfora / (float)jogosfora);
-		mod[0].listaClubes[a].ataque_fora = media / mod[0].mediapts_fora;
-		media = ((float)golossofridoscasa / (float)jogoscasa);
-		mod[0].listaClubes[a].defesa_casa = media / mod[0].mediapts_fora;
-		media = ((float)golossofridosfora / (float)jogosfora);
-		mod[0].listaClubes[a].defesa_fora = media / mod[0].mediapts_casa;
-	}
-}
-void Poisson(modalidade *mod)
-{
-	FILE *fResultados;
-	int numeroLinhas = 0;
-	float lambda_c, lambda_f, normalizador_c = 0, normalizador_f = 0, aux;
-	numeroLinhas = FicheiroLinhas("resultados.txt");
-
-	for (int i = 0; i < numeroLinhas; i++)
-	{
-		lambda_c = mod[0].listaJogos[i].casa.ataque_casa * mod[0].listaJogos[i].visitante.defesa_fora * mod[0].mediapts_casa;
-		lambda_f = mod[0].listaJogos[i].visitante.ataque_fora * mod[0].listaJogos[i].casa.defesa_casa * mod[0].mediapts_fora;
-
-		for (int j = 0; j <= mod[0].maxpts; j++)
-		{
-			mod[0].listaJogos[i].PoissonCasa[j] = (exp(-lambda_c) * pow(lambda_c, j)) / factorial(mod[0].maxpts);
-			normalizador_c += mod[0].listaJogos[i].PoissonCasa[j];
-			mod[0].listaJogos[i].PoissonFora[j] = (exp(-lambda_f) * pow(lambda_f, j)) / factorial(mod[0].maxpts);
-			normalizador_f += mod[0].listaJogos[i].PoissonFora[j];
-		}
-	}
-
-	for (int i = 0; i < numeroLinhas; i++)
-	{
-		for (int j = 0; j <= mod[0].maxpts; j++)
-		{
-			aux = regra3simples(normalizador_c, mod[0].listaJogos[i].PoissonCasa[j]);
-			mod[0].listaJogos[i].PoissonCasa[j] = aux;
-			aux = regra3simples(normalizador_f, mod[0].listaJogos[i].PoissonFora[j]);
-			mod[0].listaJogos[i].PoissonFora[j] = aux;
-		}
-	}
-
-}
-void CalculaOddsIniciais(modalidade *mod, int a)
-{
-	float empate = 0, vitoria = 0, somaaux = 0;
-
-	for (int i = 0; i <= mod[0].maxpts; i++)
-	{
-		for (int j = 0; j <= i; j++)
-		{
-			if (i == j)
-			{
-				empate += mod[0].listaJogos[a].PoissonCasa[i] * mod[0].listaJogos[a].PoissonFora[j];
-			}
-			else
-			{
-				somaaux += mod[0].listaJogos[a].PoissonFora[j];
-				vitoria += mod[0].listaJogos[a].PoissonCasa[i] * somaaux;
-			}
-		}
-	}
-
-	printf("VITORIA CASA: %3f ", vitoria);
-	printf("EMPATE: %3f ", empate);
-	printf("VITORIA VISITANTE: %3f", 1 - vitoria - empate);
-}
-
-//se possivel juntar as 2 numa...
-int SimulaComBaseNasOddsCasa(modalidade *mod, int a)
-{
-	int aux;
-	float somaaux = 0;
-
-	srand(SeedAleatoria());
-	aux = rand() % 101;
-
-	int i = 0;
-	while(i <= mod[0].maxpts)
-	{
-		somaaux += mod[0].listaJogos[a].PoissonCasa[i];
-		if (aux < somaaux * 100)
-			return i;
-		else
-			i++;
-	}
-}
-int SimulaComBaseNasOddsFora(modalidade *mod, int a)
-{
-	int aux;
-	float somaaux = 0;
-
-	srand(SeedAleatoria());
-	aux = rand() % 101;
-
-	int i = 0;
-	while (i <= mod[0].maxpts)
-	{
-		somaaux += mod[0].listaJogos[a].PoissonFora[i];
-		if (aux < somaaux * 100)
-			return i;
-		else
-			i++;
-	}
+		printf("QUANTIDADE A APOSTAR (1-100): ");
+		scanf("%d", &valorAposta);
+		while (getchar() != '\n');
+	} while (valorAposta <= 0 || valorAposta > 100);
 }

@@ -4,9 +4,8 @@
 int main(void) //Menu
 {
 	char tecla_menu = 0;
-	modalidade modalidades[10], modAux;
-	jogo jogoAux;
-	int saldo, modalidadesCount, valorAposta, pontos, pontos2;
+	modalidade modalidades[10];
+	int saldo, modalidadesCount, valorAposta, pontos, pontos2, indexJogo, indexModalidades;
 
 	FicheiroLeData(modalidades, &modalidadesCount);
 
@@ -46,15 +45,11 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':	
-			modAux = EscolheModalidade(modalidades, &modalidadesCount);
-			jogoAux = EscolheJogo(&modAux);
-			do
-			{
-				printf("QUANTIDADE A APOSTAR (1-100): ");
-				scanf("%d", &valorAposta);
-				while (getchar() != '\n');
-			} while (valorAposta <= 0 || valorAposta > 100);
+			indexModalidades = EscolheModalidade(modalidades, &modalidadesCount);
+			indexJogo = EscolheJogo(&modalidades[indexModalidades - 1]);
+
 			//AQUI FAZ AQUELA PARTE TODA DE GERAR NUMEROS MUITO LINDA <3
+			
 
 			//AQUI VERIFICA SE GANHOU PERDEU EMPATOU E ACTUALIZA O SALDO
 

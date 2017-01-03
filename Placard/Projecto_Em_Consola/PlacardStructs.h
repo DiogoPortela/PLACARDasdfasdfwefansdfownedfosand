@@ -24,6 +24,7 @@ typedef struct
 	clube visitante;
 	float PoissonCasa[120];
 	float PoissonFora[120];
+	float oddCasa, oddEmpate, oddVisitante;
 	int resultado[2];
 }jogo;
 

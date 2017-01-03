@@ -1,10 +1,13 @@
 /*HEADER FILE COM AS FUNCOES NECESSARIAS PARA TODO O CODIGO DO PROJETO*/
 void			AtribuiResultado			(modalidade m, int a, int b);
+void			CalculaAtteDef				(modalidade *mod);
+void			CalculaMediaGolosCasa		(modalidade *mod);
+void			CalculaMediaGolosFora		(modalidade *mod);
+void			CalculaOddsIniciais			(modalidade *mod);
 void			CriaJogos					(modalidade *mod);
-int				CalculaDifGolos				(modalidade m, int a, int ultimos);
 void			Definicoes					(modalidade *mod, int *quantidade);
-jogo			EscolheJogo					(modalidade *mod);
-modalidade		EscolheModalidade			(modalidade *mod, int *quantidade);
+int				EscolheJogo					(modalidade *mod);
+int				EscolheModalidade			(modalidade *mod, int *quantidade);
 void			FicheiroExiste				(char nomeficheiro[], FILE **fd);
 void			FicheiroImprimir			(char nomeficheiro[]);
 void			FicheiroLeData				(modalidade *mod, int *quantidadeMods);
@@ -12,5 +15,6 @@ int				FicheiroLinhas				(char nomeficheiro[]);
 void			GerirSaldo					(int *saldo);
 void			ListarTudo					(modalidade *mod, int *quantidade);
 void			LimpaEcra					(void);
+void			Poisson						(modalidade *mod);
 int				ResultadoRandom				(clube a, int max);
 int				SeedAleatoria				(void);
