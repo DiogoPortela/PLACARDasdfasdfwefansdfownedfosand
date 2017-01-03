@@ -381,15 +381,6 @@ int SeedAleatoria(void)
 	srand(time(NULL));
 	seed += rand() % 9999999999999999999;
 }
-/*int ValorRandomComBaseNaProb(clube a, int max)
-{
-	int pontos = 0;
-	for (int i = 0; i < max; i++)
-	{
-		pontos += rand() < a.probabilidade * ((float)RAND_MAX + 1.0);
-	}
-	return pontos;
-}*/
 long factorial(int n)
 {
 	if (n == 0)
@@ -916,6 +907,9 @@ jogo EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre 
 		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
 		 
 		//Imprime alguns jogos escolhidos aleatoriamente
+
+
+		//PARTE DO CODIGO QUE ADDEI
 		int numerosUsados[5] = { 0 }, flag;
 		for (int i = 0; i < 5; i++)
 		{
@@ -1151,13 +1145,65 @@ void Poisson(modalidade *mod)
 	}
 
 }
-void CalculaOddsIniciais(modalidade *mod, int a) // ja acabo
+void CalculaOddsIniciais(modalidade *mod, int a)
 {
-	float empate, vitoria = 0;
+	float empate = 0, vitoria = 0, somaaux = 0;
 
 	for (int i = 0; i <= mod[0].maxpts; i++)
 	{
-		vitoria += mod[0].listaJogos[a].PoissonCasa[i] * mod[0].listaJogos[a].PoissonFora[i + 1];
+		for (int j = 0; j <= i; j++)
+		{
+			if (i == j)
+			{
+				empate += mod[0].listaJogos[a].PoissonCasa[i] * mod[0].listaJogos[a].PoissonFora[j];
+			}
+			else
+			{
+				somaaux += mod[0].listaJogos[a].PoissonFora[j];
+				vitoria += mod[0].listaJogos[a].PoissonCasa[i] * somaaux;
+			}
+		}
 	}
 
+	printf("VITORIA CASA: %3f ", vitoria);
+	printf("EMPATE: %3f ", empate);
+	printf("VITORIA VISITANTE: %3f", 1 - vitoria - empate);
+}
+
+//se possivel juntar as 2 numa...
+int SimulaComBaseNasOddsCasa(modalidade *mod, int a)
+{
+	int aux;
+	float somaaux = 0;
+
+	srand(SeedAleatoria());
+	aux = rand() % 101;
+
+	int i = 0;
+	while(i <= mod[0].maxpts)
+	{
+		somaaux += mod[0].listaJogos[a].PoissonCasa[i];
+		if (aux < somaaux * 100)
+			return i;
+		else
+			i++;
+	}
+}
+int SimulaComBaseNasOddsFora(modalidade *mod, int a)
+{
+	int aux;
+	float somaaux = 0;
+
+	srand(SeedAleatoria());
+	aux = rand() % 101;
+
+	int i = 0;
+	while (i <= mod[0].maxpts)
+	{
+		somaaux += mod[0].listaJogos[a].PoissonFora[i];
+		if (aux < somaaux * 100)
+			return i;
+		else
+			i++;
+	}
 }
