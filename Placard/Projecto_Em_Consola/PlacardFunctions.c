@@ -7,50 +7,53 @@ void LimpaEcra(void)	//Apresenta uma mensagem antes de continuar e limpa o ecra
 	getch();
 	system("cls");
 }
-void AtribuiResultado(modalidade m, int a, int b)
+void AtribuiResultado(modalidade *mod, int a, int b)
 {
 	FILE *fResultados, *fJogos;
 	int apontos, bpontos, intAux = 0;
 	char nomeFicheiroJogos[200], nomeFicheiroResultados[200];
 	clube aux1, aux2;
 
-	strcpy(nomeFicheiroJogos, m.nome);
+	strcpy(nomeFicheiroJogos, mod[0].nome);
 	strcat(nomeFicheiroJogos, "-jogos.txt");
-	strcpy(nomeFicheiroResultados, m.nome);
+	strcpy(nomeFicheiroResultados, mod[0].nome);
 	strcat(nomeFicheiroResultados, "-resultados.txt");
 
-	//fResultados = fopen(nomeFicheiroResultados, "w");
-
-	/*for (int i = 0; i < m.listaJogosCount; i++)
+	/*for (int i = 0; i < mod[0].listaJogosCount; i++)
 	{
-		
-		apontos = ResultadoRandom(m.listaClubes[a], m.maxpts);
-		bpontos = ResultadoRandom(m.listaClubes[b], m.maxpts);
-		if (i == 0)
+		if (!strcmp((*mod[0].listaJogos[a].casa).nome, (*mod[0].listaJogos[i].casa).nome) && !strcmp((*mod[0].listaJogos[a].visitante).nome, (*mod[0].listaJogos[i].visitante).nome))
 		{
-			fprintf(fResultados, "%s %d - %d %s", m.listaClubes[a].nome, apontos, bpontos, m.listaClubes[b].nome);
+			apontos = ResultadoRandom(mod[0].listaClubes[a], mod[0].maxpts);
+			bpontos = ResultadoRandom(mod[0].listaClubes[b], mod[0].maxpts);
+			mod[0].listaJogos[i].resultado[0] = apontos;
+			mod[0].listaJogos[i].resultado[1] = bpontos;
 		}
-		else
-		{
-			fprintf(fResultados, "\n%s %d - %d %s", m.listaClubes[a].nome, apontos, bpontos, m.listaClubes[b].nome);
-		}
-	}
-	fclose(fResultados);*/
+	}*/
+
+	
+
 	if (FicheiroExiste(nomeFicheiroJogos, &fJogos) && FicheiroExiste(nomeFicheiroResultados, &fResultados))
 	{
+		int i = 0;
 		while (fscanf(fJogos, "%s - %s", aux1.nome, aux2.nome) != EOF)
 		{
-			if (intAux == 0 && !strcmp(aux1.nome, m.listaClubes[a].nome) && !strcmp(aux2.nome, m.listaClubes[b].nome))
-			{
-				apontos = ResultadoRandom(m.listaClubes[a], m.maxpts);
-				bpontos = ResultadoRandom(m.listaClubes[b], m.maxpts);
-				fprintf(fResultados, "%s %d - %d %s", m.listaClubes[a].nome, apontos, bpontos, m.listaClubes[b].nome);
+			if (intAux == 0 && !strcmp(aux1.nome, mod[0].listaClubes[a].nome) && !strcmp(aux2.nome, mod[0].listaClubes[b].nome))
+			{		
+				apontos = ResultadoRandom(mod[0].listaClubes[a], mod[0].maxpts);
+				bpontos = ResultadoRandom(mod[0].listaClubes[b], mod[0].maxpts);
+				mod[0].listaJogos[i].resultado[0] = apontos;
+				mod[0].listaJogos[i].resultado[1] = bpontos;
+				i++;
+				fprintf(fResultados, "%s %d - %d %s", mod[0].listaClubes[a].nome, apontos, bpontos, mod[0].listaClubes[b].nome);
 			}
-			else if (!strcmp(aux1.nome, m.listaClubes[a].nome) && !strcmp(aux2.nome, m.listaClubes[b].nome))
+			else if (!strcmp(aux1.nome, mod[0].listaClubes[a].nome) && !strcmp(aux2.nome, mod[0].listaClubes[b].nome))
 			{
-				apontos = ResultadoRandom(m.listaClubes[a], m.maxpts);
-				bpontos = ResultadoRandom(m.listaClubes[b], m.maxpts);
-				fprintf(fResultados, "\n%s %d - %d %s", m.listaClubes[a].nome, apontos, bpontos, m.listaClubes[b].nome);
+				apontos = ResultadoRandom(mod[0].listaClubes[a], mod[0].maxpts);
+				bpontos = ResultadoRandom(mod[0].listaClubes[b], mod[0].maxpts);
+				mod[0].listaJogos[i].resultado[0] = apontos;
+				mod[0].listaJogos[i].resultado[1] = bpontos;
+				i++;
+				fprintf(fResultados, "\n%s %d - %d %s", mod[0].listaClubes[a].nome, apontos, bpontos, mod[0].listaClubes[b].nome);
 			}
 			intAux++;
 		}
@@ -421,7 +424,15 @@ float regra3simples(float n, float a)
 //tem de ler so a ultima epoca
 void CalculaMediaGolosCasa(modalidade *mod)
 {
-	FILE *fResultados;
+	int golosCasa = 0, golosFora = 0, intAux1, intAux2;
+	for (int i = 0; i < mod[0].listaJogosCount; i++)
+	{
+		golosCasa += mod[0].listaJogos[i].resultado[0];
+		golosFora += mod[0].listaJogos[i].resultado[1];
+	}
+	mod[0].mediapts_casa = ((float)golosCasa / (float)mod[0].listaJogosCount);
+	mod[0].mediapts_fora = ((float)golosFora / (float)mod[0].listaJogosCount);
+	/*FILE *fResultados;
 	int golosCasa = 0, golosFora = 0, intAux1, intAux2, numeroLinhas;
 
 	char nomeFicheiro[200];
@@ -442,12 +453,47 @@ void CalculaMediaGolosCasa(modalidade *mod)
 		fclose(fResultados);
 		mod[0].mediapts_casa = ((float)golosCasa / (float)numeroLinhas);
 		mod[0].mediapts_fora = ((float)golosFora / (float)numeroLinhas);
-	}
+	}*/
 }
-
 void CalculaAtteDef(modalidade *mod)
 {
-	FILE *fResultados;
+	int golosfora, goloscasa, golossofridoscasa, golossofridosfora, jogoscasa, jogosfora;
+	char nomeAux1[20], nomeAux2[20], nomeFicheiro[200];
+	float media;
+
+	for (int indexClube = 0; indexClube <= mod[0].listaClubesCount; indexClube++)
+	{
+		golossofridoscasa = 0;
+		goloscasa = 0;
+		jogoscasa = 0;
+		golossofridosfora = 0;
+		golosfora = 0;
+		jogosfora = 0;
+		for (int i = 0; i < mod[0].listaJogosCount; i++)
+		{
+			if (strcmp((*mod[0].listaJogos[i].casa).nome, mod[0].listaClubes[indexClube].nome) == 0)
+			{
+				golossofridoscasa += mod[0].listaJogos[i].resultado[1];
+				goloscasa += mod[0].listaJogos[i].resultado[0];
+				jogoscasa++;
+			}
+			else if (strcmp((*mod[0].listaJogos[i].visitante).nome, mod[0].listaClubes[indexClube].nome) == 0)
+			{
+				golossofridosfora += mod[0].listaJogos[i].resultado[0];;
+				golosfora += mod[0].listaJogos[i].resultado[1];;
+				jogosfora++;
+			}
+		}
+		media = ((float)goloscasa / (float)jogoscasa);
+		mod[0].listaClubes[indexClube].ataque_casa = media / mod[0].mediapts_casa;
+		media = ((float)golosfora / (float)jogosfora);
+		mod[0].listaClubes[indexClube].ataque_fora = media / mod[0].mediapts_fora;
+		media = ((float)golossofridoscasa / (float)jogoscasa);
+		mod[0].listaClubes[indexClube].defesa_casa = media / mod[0].mediapts_fora;
+		media = ((float)golossofridosfora / (float)jogosfora);
+		mod[0].listaClubes[indexClube].defesa_fora = media / mod[0].mediapts_casa;		
+	}
+	/*FILE *fResultados;
 	int golosfora = 0, goloscasa = 0, golossofridoscasa = 0, golossofridosfora = 0, jogoscasa = 0, jogosfora = 0, intAux1, intAux2, numeroLinhas;
 	char nomeAux1[20], nomeAux2[20], nomeFicheiro[200];
 	float media;
@@ -492,7 +538,7 @@ void CalculaAtteDef(modalidade *mod)
 			jogosfora = 0;
 		}
 		fclose(fResultados);
-	}
+	}*/
 }
 void Poisson(modalidade *mod)
 {
@@ -1116,16 +1162,16 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 							if (i != j)
 							{
 								srand(SeedAleatoria() + contadorDaSeed);
-								AtribuiResultado(mod[inputInt - 1], i, j);
+								AtribuiResultado(&mod[inputInt - 1], i, j);
 								contadorDaSeed++;
 							}
 						}
 					}
 					CalculaMediaGolosCasa(&mod[inputInt - 1]);
 					CalculaAtteDef(&mod[inputInt - 1]);
-					Poisson(&mod[inputInt - 1]);
+					/*Poisson(&mod[inputInt - 1]);
 					CalculaOddsIniciais(&mod[inputInt - 1]);
-					CriaJogos(&mod[inputInt - 1]);
+					CriaJogos(&mod[inputInt - 1]);*/
 					break;
 				}
 				case '2':
