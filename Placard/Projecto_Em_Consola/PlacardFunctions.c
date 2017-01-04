@@ -7,7 +7,7 @@ void LimpaEcra(void)	//Apresenta uma mensagem antes de continuar e limpa o ecra
 	getch();
 	system("cls");
 }
-void AtribuiResultado(modalidade *mod, int a, int b)
+void AtribuiResultado(modalidade *mod)
 {
 	FILE *fResultados, *fJogos;
 	int apontos, bpontos, intAux = 0;
@@ -19,43 +19,32 @@ void AtribuiResultado(modalidade *mod, int a, int b)
 	strcpy(nomeFicheiroResultados, mod[0].nome);
 	strcat(nomeFicheiroResultados, "-resultados.txt");
 
-	/*for (int i = 0; i < mod[0].listaJogosCount; i++)
-	{
-		if (!strcmp((*mod[0].listaJogos[a].casa).nome, (*mod[0].listaJogos[i].casa).nome) && !strcmp((*mod[0].listaJogos[a].visitante).nome, (*mod[0].listaJogos[i].visitante).nome))
-		{
-			apontos = ResultadoRandom(mod[0].listaClubes[a], mod[0].maxpts);
-			bpontos = ResultadoRandom(mod[0].listaClubes[b], mod[0].maxpts);
-			mod[0].listaJogos[i].resultado[0] = apontos;
-			mod[0].listaJogos[i].resultado[1] = bpontos;
-		}
-	}*/
-
-	
+	fResultados = fopen(nomeFicheiroResultados, "a+");
 
 	if (FicheiroExiste(nomeFicheiroJogos, &fJogos) && FicheiroExiste(nomeFicheiroResultados, &fResultados))
 	{
-		int i = 0;
-		while (fscanf(fJogos, "%s - %s", aux1.nome, aux2.nome) != EOF)
+		for (int i = 0; i < mod[0].listaClubesCount; i++)
 		{
-			if (intAux == 0 && !strcmp(aux1.nome, mod[0].listaClubes[a].nome) && !strcmp(aux2.nome, mod[0].listaClubes[b].nome))
-			{		
-				apontos = ResultadoRandom(mod[0].listaClubes[a], mod[0].maxpts);
-				bpontos = ResultadoRandom(mod[0].listaClubes[b], mod[0].maxpts);
-				mod[0].listaJogos[i].resultado[0] = apontos;
-				mod[0].listaJogos[i].resultado[1] = bpontos;
-				i++;
-				fprintf(fResultados, "%s %d - %d %s", mod[0].listaClubes[a].nome, apontos, bpontos, mod[0].listaClubes[b].nome);
-			}
-			else if (!strcmp(aux1.nome, mod[0].listaClubes[a].nome) && !strcmp(aux2.nome, mod[0].listaClubes[b].nome))
+			for (int j = 0; j < mod[0].listaClubesCount; j++)
 			{
-				apontos = ResultadoRandom(mod[0].listaClubes[a], mod[0].maxpts);
-				bpontos = ResultadoRandom(mod[0].listaClubes[b], mod[0].maxpts);
-				mod[0].listaJogos[i].resultado[0] = apontos;
-				mod[0].listaJogos[i].resultado[1] = bpontos;
-				i++;
-				fprintf(fResultados, "\n%s %d - %d %s", mod[0].listaClubes[a].nome, apontos, bpontos, mod[0].listaClubes[b].nome);
+				if (i != j)
+				{
+					apontos = ResultadoRandom(mod[0].listaClubes[i], mod[0].maxpts);
+					bpontos = ResultadoRandom(mod[0].listaClubes[j], mod[0].maxpts);
+					if (intAux == 0)
+					{
+						fprintf(fResultados, "%s %d - %d %s", mod[0].listaClubes[i].nome, apontos, bpontos, mod[0].listaClubes[j].nome);
+					}
+					else
+					{
+						fprintf(fResultados, "\n%s %d - %d %s", mod[0].listaClubes[i].nome, apontos, bpontos, mod[0].listaClubes[j].nome);
+					}
+					printf("%d %d\n", apontos, bpontos);
+					mod[0].listaJogos[intAux].resultado[0] = apontos;
+					mod[0].listaJogos[intAux].resultado[1] = bpontos;
+					intAux++;
+				}
 			}
-			intAux++;
 		}
 		fclose(fJogos);
 		fclose(fResultados);
@@ -94,6 +83,7 @@ void CriaJogos(modalidade *mod)	//Gera todos jogos possiveis associados a uma mo
 			}
 		}
 	}
+	fclose(fJogos);
 }
 int EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha de uma modalidade e devolve-a
 {
@@ -491,7 +481,7 @@ void CalculaAtteDef(modalidade *mod)
 		media = ((float)golossofridoscasa / (float)jogoscasa);
 		mod[0].listaClubes[indexClube].defesa_casa = media / mod[0].mediapts_fora;
 		media = ((float)golossofridosfora / (float)jogosfora);
-		mod[0].listaClubes[indexClube].defesa_fora = media / mod[0].mediapts_casa;		
+		mod[0].listaClubes[indexClube].defesa_fora = media / mod[0].mediapts_casa;
 	}
 	/*FILE *fResultados;
 	int golosfora = 0, goloscasa = 0, golossofridoscasa = 0, golossofridosfora = 0, jogoscasa = 0, jogosfora = 0, intAux1, intAux2, numeroLinhas;
@@ -1154,19 +1144,7 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 					strcat(nomeFicheiro, "-resultados.txt");
 					remove(nomeFicheiro);
 
-					int contadorDaSeed = 0;
-					for (int i = 0; i < mod[inputInt - 1].listaClubesCount; i++)
-					{
-						for (int j = 0; j < mod[inputInt - 1].listaClubesCount; j++)
-						{
-							if (i != j)
-							{
-								srand(SeedAleatoria() + contadorDaSeed);
-								AtribuiResultado(&mod[inputInt - 1], i, j);
-								contadorDaSeed++;
-							}
-						}
-					}
+					AtribuiResultado(&mod[inputInt - 1]);
 					CalculaMediaGolosCasa(&mod[inputInt - 1]);
 					CalculaAtteDef(&mod[inputInt - 1]);
 					/*Poisson(&mod[inputInt - 1]);
