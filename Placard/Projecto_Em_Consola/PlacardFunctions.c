@@ -150,6 +150,7 @@ void FicheiroImprimir(char nomeficheiro[])
 void FicheiroLeData(modalidade *mod, int *quantidadeMods)	//Le os ficheiros para memoria
 {
 	int i, j, k, l;
+	float floatAux1, floatAux2, floatAux3;
 	char charAux[100], charAux2[100];
 	char nomeFicheiro[200];
 	FILE *fModalidades, *fClubes, *fJogos;
@@ -183,11 +184,11 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)	//Le os ficheiros para
 					mod[i].listaJogosCount = FicheiroLinhas(nomeFicheiro);
 					for (k = 0; k < mod[i].listaJogosCount; k++)
 					{
-						fscanf(fJogos, "%s - %s %*f %*f %*f", charAux, charAux2);
+						fscanf(fJogos, "%s - %s %f %f %f", charAux, charAux2, &floatAux1, &floatAux2, &floatAux3);
 						for (int l = 0; l < mod[i].listaClubesCount; l++)
 						{
 							if (!strcmp(charAux, mod[i].listaClubes[l].nome))
-							{
+							{								
 								mod[i].listaJogos[k].casa = &mod[i].listaClubes[l];
 							}
 							if (!strcmp(charAux2, mod[i].listaClubes[l].nome))
@@ -195,7 +196,9 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)	//Le os ficheiros para
 								mod[i].listaJogos[k].visitante = &mod[i].listaClubes[l];
 							}
 						}
-
+						mod[i].listaJogos[k].oddCasa = floatAux1;
+						mod[i].listaJogos[k].oddEmpate = floatAux2;
+						mod[i].listaJogos[k].oddVisitante = floatAux3;
 					}
 					fclose(fJogos);
 				}
@@ -643,8 +646,8 @@ char AtribuiResultadoComOdds(modalidade *mod, int indexJogo)
 		pontosCasa = SimulaComBaseNasOddsCasa(&mod[0], indexJogo);
 		pontosFora = SimulaComBaseNasOddsFora(&mod[0], indexJogo);
 
-		fprintf(nomeFicheiro, "%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
-		printf(nomeFicheiro, "%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
+		fprintf(fResultados, "%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
+		printf(fResultados, "%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
 
 	}
 	fclose(nomeFicheiro);
@@ -1177,7 +1180,7 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 		srand(seed);
 
 		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
-		printf("  CASA\tVISITANTE\tODD CASA\tODD EMPATE\ODD VISITANTE\n");
+		printf("   \tCASA\t\tVISITANTE\tODD CASA\tODD EMPATE\tODD VISITANTE\n");
 		//Imprime alguns jogos escolhidos aleatoriamente
 
 		int numerosUsados[5] = { 0 }, flag;
@@ -1200,7 +1203,7 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 					}
 				}
 			} while (flag);
-			printf("%d- %s - %s %3f %3f %3f\n", i + 1, (*mod[0].listaJogos[guarda].casa).nome, (*mod[0].listaJogos[guarda].visitante).nome, mod[0].listaJogos[guarda].oddCasa, mod[0].listaJogos[guarda].oddEmpate, mod[0].listaJogos[guarda].oddVisitante);
+			printf("%d- %15s - %15s |\t%3f \t%3f \t%3f\n", i + 1, (*mod[0].listaJogos[guarda].casa).nome, (*mod[0].listaJogos[guarda].visitante).nome, mod[0].listaJogos[guarda].oddCasa, mod[0].listaJogos[guarda].oddEmpate, mod[0].listaJogos[guarda].oddVisitante);
 		}
 
 		//Le o input do utilizador e retorna o jogo escolhido
@@ -1218,7 +1221,7 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 }
 void GereJogo(modalidade *mod, int *quantidade, int *saldo)
 {
-	FILE *fSaldo;
+	FILE *fSaldoEscrita;
 	int indexModalidade, indexJogo, valorAposta, intAux;
 	char charAux;
 
@@ -1234,7 +1237,7 @@ void GereJogo(modalidade *mod, int *quantidade, int *saldo)
 		printf("\n\nOPCAO: ");
 		scanf("%d", &intAux);
 		while (getchar() != '\n');
-	} while (intAux >= 1 || intAux <= 3);
+	} while (intAux  < 1 || intAux > 3);
 
 	do
 	{
@@ -1258,7 +1261,7 @@ void GereJogo(modalidade *mod, int *quantidade, int *saldo)
 		*saldo += *saldo * mod[indexModalidade].listaJogos[indexJogo].oddVisitante;
 	}
 
-	fSaldo = fopen("saldo.txt", "w");
-	fprintf(fSaldo, "%d", *saldo);
-	fclose(fSaldo);
+	fSaldoEscrita = fopen("saldo.txt", "w");
+	fprintf(fSaldoEscrita, "%d", *saldo);
+	fclose(fSaldoEscrita);
 }
