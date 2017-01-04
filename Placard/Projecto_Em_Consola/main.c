@@ -45,7 +45,7 @@ int main(void) //Menu
 			GerirSaldo(&saldo);
 			break;
 		case '2':	
-			GereJogo(modalidades, &modalidadesCount);
+			GereJogo(modalidades, &modalidadesCount, &saldo);
 			break;
 		case '3':
 			ListarTudo(modalidades, &modalidadesCount);

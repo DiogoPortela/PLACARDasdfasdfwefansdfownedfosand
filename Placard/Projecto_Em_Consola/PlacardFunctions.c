@@ -188,7 +188,7 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods)	//Le os ficheiros para
 						for (int l = 0; l < mod[i].listaClubesCount; l++)
 						{
 							if (!strcmp(charAux, mod[i].listaClubes[l].nome))
-							{								
+							{
 								mod[i].listaJogos[k].casa = &mod[i].listaClubes[l];
 							}
 							if (!strcmp(charAux2, mod[i].listaClubes[l].nome))
@@ -408,13 +408,6 @@ long factorial(int n)
 	else
 		return(n * factorial(n - 1));
 }
-float regra3simples(float n, float a)
-{
-	float aux;
-	aux = (a * 100) / n;
-	return aux;
-}
-//tem de ler so a ultima epoca
 void CalculaMediaGolosCasa(modalidade *mod)
 {
 	int golosCasa = 0, golosFora = 0, intAux1, intAux2;
@@ -535,7 +528,7 @@ void CalculaAtteDef(modalidade *mod)
 }
 void Poisson(modalidade *mod)
 {
-	float lambda_c, lambda_f, normalizador_c = 0, normalizador_f = 0, aux;
+	float lambda_c, lambda_f, normalizador_c[maximoJogos] = { 0 }, normalizador_f[maximoJogos] = { 0 }, aux;
 
 	for (int i = 0; i < mod[0].listaJogosCount; i++)
 	{
@@ -545,9 +538,9 @@ void Poisson(modalidade *mod)
 		for (int j = 0; j <= mod[0].maxpts; j++)
 		{
 			mod[0].listaJogos[i].PoissonCasa[j] = (exp(-lambda_c) * pow(lambda_c, j)) / factorial(j);
-			normalizador_c += mod[0].listaJogos[i].PoissonCasa[j];
+			normalizador_c[i] += mod[0].listaJogos[i].PoissonCasa[j];
 			mod[0].listaJogos[i].PoissonFora[j] = (exp(-lambda_f) * pow(lambda_f, j)) / factorial(j);
-			normalizador_f += mod[0].listaJogos[i].PoissonFora[j];
+			normalizador_f[i] += mod[0].listaJogos[i].PoissonFora[j];
 		}
 	}
 
@@ -555,9 +548,9 @@ void Poisson(modalidade *mod)
 	{
 		for (int j = 0; j <= mod[0].maxpts; j++)
 		{
-			aux = regra3simples(normalizador_c, mod[0].listaJogos[i].PoissonCasa[j]);
+			aux = mod[0].listaJogos[i].PoissonCasa[j] / normalizador_c[i];
 			mod[0].listaJogos[i].PoissonCasa[j] = aux;
-			aux = regra3simples(normalizador_f, mod[0].listaJogos[i].PoissonFora[j]);
+			aux = mod[0].listaJogos[i].PoissonFora[j] / normalizador_f[i];
 			mod[0].listaJogos[i].PoissonFora[j] = aux;
 		}
 	}
@@ -565,48 +558,56 @@ void Poisson(modalidade *mod)
 }
 void CalculaOddsIniciais(modalidade *mod)
 {
-	float empate = 0, vitoria = 0, somaaux = 0;
+	float empate = 0, vitoria = 0, derrota = 0, somaaux = 0, somaaux2 = 0;
 
 	for (int indexJogo = 0; indexJogo <= mod[0].listaJogosCount; indexJogo++)
 	{
 		empate = 0;
 		vitoria = 0;
+		derrota = 0;
 		somaaux = 0;
-		for (int i = 0; i <= mod[0].maxpts; i++)
+		somaaux2 = 0;
+		for (int i = 0; i < mod[0].maxpts; i++)
 		{
-			for (int j = 0; j <= i; j++)
+			for (int j = 0; j < mod[0].maxpts; j++)
 			{
 				if (i == j)
 				{
 					empate += mod[0].listaJogos[indexJogo].PoissonCasa[i] * mod[0].listaJogos[indexJogo].PoissonFora[j];
 				}
-				else
+				else if (i > j)
 				{
 					somaaux += mod[0].listaJogos[indexJogo].PoissonFora[j];
 					vitoria += mod[0].listaJogos[indexJogo].PoissonCasa[i] * somaaux;
 				}
+				else
+				{
+					somaaux2 += mod[0].listaJogos[indexJogo].PoissonCasa[i];
+					derrota += mod[0].listaJogos[indexJogo].PoissonFora[j] * somaaux2;
+				}
 			}
 		}
-		mod[0].listaJogos[indexJogo].oddCasa = vitoria;
-		mod[0].listaJogos[indexJogo].oddEmpate = empate;
-		mod[0].listaJogos[indexJogo].oddVisitante = 1 - vitoria - empate;
+		mod[0].listaJogos[indexJogo].oddCasa =  1 + (1 / vitoria);
+		mod[0].listaJogos[indexJogo].oddEmpate = 1 + (1 / empate);
+		mod[0].listaJogos[indexJogo].oddVisitante = 1 + (1 / derrota);
 	}
 }
 
 //se possivel juntar as 2 numa...
 int SimulaComBaseNasOddsCasa(modalidade *mod, int indexJogo)
 {
-	int aux;
+	float aux;
 	float somaaux = 0;
 
 	srand(SeedAleatoria());
 	aux = rand() % 101;
+	aux /= 100;
 
 	int i = 0;
 	while (i <= mod[0].maxpts)
 	{
 		somaaux += mod[0].listaJogos[indexJogo].PoissonCasa[i];
-		if (aux < somaaux * 100)
+		if (aux < somaaux )
 			return i;
 		else
 			i++;
@@ -614,17 +615,18 @@ int SimulaComBaseNasOddsCasa(modalidade *mod, int indexJogo)
 }
 int SimulaComBaseNasOddsFora(modalidade *mod, int indexJogo)
 {
-	int aux;
+	float aux;
 	float somaaux = 0;
 
 	srand(SeedAleatoria());
 	aux = rand() % 101;
+	aux /= 100;
 
 	int i = 0;
 	while (i <= mod[0].maxpts)
 	{
 		somaaux += mod[0].listaJogos[indexJogo].PoissonFora[i];
-		if (aux < somaaux * 100)
+		if (aux < somaaux)
 			return i;
 		else
 			i++;
@@ -647,7 +649,7 @@ char AtribuiResultadoComOdds(modalidade *mod, int indexJogo)
 		pontosFora = SimulaComBaseNasOddsFora(&mod[0], indexJogo);
 
 		fprintf(fResultados, "%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
-		printf(fResultados, "%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
+		printf("\n%s %d - %d %s", (*mod[0].listaJogos[indexJogo].casa).nome, pontosCasa, pontosFora, (*mod[0].listaJogos[indexJogo].visitante).nome);
 
 	}
 	fclose(nomeFicheiro);
@@ -1237,7 +1239,7 @@ void GereJogo(modalidade *mod, int *quantidade, int *saldo)
 		printf("\n\nOPCAO: ");
 		scanf("%d", &intAux);
 		while (getchar() != '\n');
-	} while (intAux  < 1 || intAux > 3);
+	} while (intAux < 1 || intAux > 3);
 
 	do
 	{
@@ -1250,15 +1252,23 @@ void GereJogo(modalidade *mod, int *quantidade, int *saldo)
 
 	if (charAux == 'V' && intAux == 1)
 	{
-		*saldo += *saldo * mod[indexModalidade].listaJogos[indexJogo].oddCasa;
+		*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddCasa;
+		printf("\nGANHOU! SALDO: %d", *saldo);
 	}
-	if (charAux == 'E' && intAux == 2)
+	else if (charAux == 'E' && intAux == 2)
 	{
-		*saldo += *saldo * mod[indexModalidade].listaJogos[indexJogo].oddEmpate;
+		*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddEmpate;
+		printf("\nGANHOU! SALDO: %d", *saldo);
 	}
-	if (charAux == 'D' && intAux == 3)
+	else if (charAux == 'D' && intAux == 3)
 	{
-		*saldo += *saldo * mod[indexModalidade].listaJogos[indexJogo].oddVisitante;
+		*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddVisitante;
+		printf("\nGANHOU! SALDO: %d", *saldo);
+	}
+	else
+	{
+		*saldo -= valorAposta;
+		printf("\nPERDEU! SALDO: %d", *saldo);
 	}
 
 	fSaldoEscrita = fopen("saldo.txt", "w");
