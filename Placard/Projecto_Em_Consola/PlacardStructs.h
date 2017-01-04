@@ -7,7 +7,7 @@
 #include <math.h>
 
 #define maximoClubes 20
-#define maximoJogos 320
+#define maximoJogos 380
 
 typedef	struct
 {

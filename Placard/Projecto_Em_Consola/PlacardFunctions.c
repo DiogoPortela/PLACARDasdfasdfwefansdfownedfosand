@@ -58,10 +58,10 @@ void CriaJogos(modalidade *mod)	//Gera todos jogos possiveis associados a uma mo
 	//Adiciona o sufixo ao nome do ficheiro
 	strcpy(nomeFicheiro, mod[0].nome);
 	strcat(nomeFicheiro, "-jogos.txt");
-
+	int cont = 0;
 	//Gera todos os jogos
 	fJogos = fopen(nomeFicheiro, "w");
-	for (int i = 0; i < mod[0].listaClubesCount; i++)
+	for (int i = 0; i <= mod[0].listaClubesCount; i++)
 	{
 		for (int j = 0; j < mod[0].listaClubesCount; j++)
 		{
@@ -71,17 +71,18 @@ void CriaJogos(modalidade *mod)	//Gera todos jogos possiveis associados a uma mo
 				mod[0].listaJogos[0].casa = &mod[0].listaClubes[i];
 				mod[0].listaJogos[0].visitante = &mod[0].listaClubes[j];
 				fprintf(fJogos, "%s - %s %f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[0].oddCasa, mod[0].listaJogos[0].oddEmpate, mod[0].listaJogos[0].oddVisitante);
-
+				cont++;
 			}
 			//Gera o resto dos jogos
 			else if (i != j)
 			{
-				mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].casa = &mod[0].listaClubes[i];
-				mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].visitante = &mod[0].listaClubes[j];
-				fprintf(fJogos, "\n%s - %s %f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].oddCasa, mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].oddEmpate, mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].oddVisitante);
+				mod[0].listaJogos[cont].casa = &mod[0].listaClubes[i];
+				mod[0].listaJogos[cont].visitante = &mod[0].listaClubes[j];
+				fprintf(fJogos, "\n%s - %s %f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[cont].oddCasa, mod[0].listaJogos[cont].oddEmpate, mod[0].listaJogos[cont].oddVisitante);
+				cont++;
 			}
-			if (i == 17) break;
 		}
+		if (cont == (mod[0].listaClubesCount - 1) * mod[0].listaClubesCount) break;
 	}
 	fclose(fJogos);
 }
@@ -567,9 +568,9 @@ void CalculaOddsIniciais(modalidade *mod)
 		derrota = 0;
 		somaaux = 0;
 		somaaux2 = 0;
-		for (int i = 0; i < mod[0].maxpts; i++)
+		for (int i = 0; i <= mod[0].maxpts; i++)
 		{
-			for (int j = 0; j < mod[0].maxpts; j++)
+			for (int j = 0; j <= mod[0].maxpts; j++)
 			{
 				if (i == j)
 				{
@@ -1188,7 +1189,7 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 		int numerosUsados[5] = { 0 }, flag;
 		for (int i = 0; i < 5; i++)
 		{
-			guarda = rand() % ((mod[0].listaJogosCount - 1) - 0 + 1) + 0;
+			guarda = rand() % mod[0].listaJogosCount;
 			numerosUsados[i] = guarda;
 			do
 			{
@@ -1205,7 +1206,7 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 					}
 				}
 			} while (flag);
-			printf("%d- %15s - %15s |\t%3f \t%3f \t%3f\n", i + 1, (*mod[0].listaJogos[guarda].casa).nome, (*mod[0].listaJogos[guarda].visitante).nome, mod[0].listaJogos[guarda].oddCasa, mod[0].listaJogos[guarda].oddEmpate, mod[0].listaJogos[guarda].oddVisitante);
+			printf("%d- %15s - %15s |\t%2f \t%2f \t%2f\n", i + 1, (*mod[0].listaJogos[guarda].casa).nome, (*mod[0].listaJogos[guarda].visitante).nome, mod[0].listaJogos[guarda].oddCasa, mod[0].listaJogos[guarda].oddEmpate, mod[0].listaJogos[guarda].oddVisitante);
 		}
 
 		//Le o input do utilizador e retorna o jogo escolhido
