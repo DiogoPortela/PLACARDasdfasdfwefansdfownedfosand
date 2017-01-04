@@ -532,17 +532,9 @@ void CalculaAtteDef(modalidade *mod)
 }
 void Poisson(modalidade *mod)
 {
-	FILE *fResultados;
-	int numeroLinhas = 0;
 	float lambda_c, lambda_f, normalizador_c = 0, normalizador_f = 0, aux;
-	char nomeFicheiro[200];
 
-	strcpy(nomeFicheiro, mod[0].nome);
-	strcat(nomeFicheiro, "-resultados.txt");
-
-	numeroLinhas = FicheiroLinhas(nomeFicheiro);
-
-	for (int i = 0; i < numeroLinhas; i++)
+	for (int i = 0; i < mod[0].listaJogosCount; i++)
 	{
 		lambda_c = (*mod[0].listaJogos[i].casa).ataque_casa * (*mod[0].listaJogos[i].visitante).defesa_fora * mod[0].mediapts_casa;
 		lambda_f = (*mod[0].listaJogos[i].visitante).ataque_fora * (*mod[0].listaJogos[i].casa).defesa_casa * mod[0].mediapts_fora;
@@ -556,7 +548,7 @@ void Poisson(modalidade *mod)
 		}
 	}
 
-	for (int i = 0; i < numeroLinhas; i++)
+	for (int i = 0; i < mod[0].listaJogosCount; i++)
 	{
 		for (int j = 0; j <= mod[0].maxpts; j++)
 		{
@@ -574,6 +566,9 @@ void CalculaOddsIniciais(modalidade *mod)
 
 	for (int indexJogo = 0; indexJogo <= mod[0].listaJogosCount; indexJogo++)
 	{
+		empate = 0;
+		vitoria = 0;
+		somaaux = 0;
 		for (int i = 0; i <= mod[0].maxpts; i++)
 		{
 			for (int j = 0; j <= i; j++)
@@ -1147,8 +1142,8 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 					AtribuiResultado(&mod[inputInt - 1]);
 					CalculaMediaGolosCasa(&mod[inputInt - 1]);
 					CalculaAtteDef(&mod[inputInt - 1]);
-					//Poisson(&mod[inputInt - 1]);
-					//CalculaOddsIniciais(&mod[inputInt - 1]);
+					Poisson(&mod[inputInt - 1]);
+					CalculaOddsIniciais(&mod[inputInt - 1]);
 					CriaJogos(&mod[inputInt - 1]);
 					break;
 				}
