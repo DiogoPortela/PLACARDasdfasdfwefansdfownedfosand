@@ -39,7 +39,7 @@ void AtribuiResultado(modalidade *mod)
 					{
 						fprintf(fResultados, "\n%s %d - %d %s", mod[0].listaClubes[i].nome, apontos, bpontos, mod[0].listaClubes[j].nome);
 					}
-					printf("%d %d\n", apontos, bpontos);
+					//printf("%d %d\n", apontos, bpontos);
 					mod[0].listaJogos[intAux].resultado[0] = apontos;
 					mod[0].listaJogos[intAux].resultado[1] = bpontos;
 					intAux++;
@@ -76,11 +76,11 @@ void CriaJogos(modalidade *mod)	//Gera todos jogos possiveis associados a uma mo
 			//Gera o resto dos jogos
 			else if (i != j)
 			{
-				mod[0].listaJogos[(i + 1) * (j + 1)].casa = &mod[0].listaClubes[i];
-				mod[0].listaJogos[(i + 1) * (j + 1)].visitante = &mod[0].listaClubes[j];
-				fprintf(fJogos, "\n%s - %s %f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[(i + 1) * (j + 1)].oddCasa, mod[0].listaJogos[(i + 1) * (j + 1)].oddEmpate, mod[0].listaJogos[(i + 1) * (j + 1)].oddVisitante);
-
+				mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].casa = &mod[0].listaClubes[i];
+				mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].visitante = &mod[0].listaClubes[j];
+				fprintf(fJogos, "\n%s - %s %f %f %f", mod[0].listaClubes[i], mod[0].listaClubes[j], mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].oddCasa, mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].oddEmpate, mod[0].listaJogos[(i * mod[0].listaClubesCount) + j].oddVisitante);
 			}
+			if (i == 17) break;
 		}
 	}
 	fclose(fJogos);
@@ -1147,9 +1147,9 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 					AtribuiResultado(&mod[inputInt - 1]);
 					CalculaMediaGolosCasa(&mod[inputInt - 1]);
 					CalculaAtteDef(&mod[inputInt - 1]);
-					/*Poisson(&mod[inputInt - 1]);
-					CalculaOddsIniciais(&mod[inputInt - 1]);
-					CriaJogos(&mod[inputInt - 1]);*/
+					//Poisson(&mod[inputInt - 1]);
+					//CalculaOddsIniciais(&mod[inputInt - 1]);
+					CriaJogos(&mod[inputInt - 1]);
 					break;
 				}
 				case '2':
