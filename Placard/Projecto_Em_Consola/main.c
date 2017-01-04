@@ -3,11 +3,12 @@
 
 int main(void) //Menu
 {
+	srand(SeedAleatoria());
 	char tecla_menu = 0;
 	modalidade modalidades[10];
-	int saldo, modalidadesCount;;
+	int saldo, modalidadesCount;
 
-	FicheiroLeData(modalidades, &modalidadesCount);
+	FicheiroLeData(modalidades, &modalidadesCount, &saldo);
 
 	printf("-ooooooooooo+ +ooooooooooo--ooooooooooo+ +ooooooooooo-.ooooooooooo+ /ooooooooooo:.oooooooooooo`\n");
 	printf("+hhhhhhhhhhhh`hhhhhhhhhhhh++hhhhhhhhhhhh`hhhhhhhhhhhho/hhhhhhhhhhhh.yhhhhhhhhhhho/hhhhhhhhhhhh.\n");

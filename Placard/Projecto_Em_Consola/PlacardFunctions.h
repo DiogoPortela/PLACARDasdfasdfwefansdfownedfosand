@@ -17,7 +17,7 @@ void			GerirSaldo					(int *saldo);
 void			ListarTudo					(modalidade *mod, int *quantidade);
 void			LimpaEcra					(void);
 void			Poisson						(modalidade *mod);
-int				ResultadoRandom				(clube a, int max);
+int				ResultadoRandom				(modalidade *mod);
 int				SeedAleatoria				(void);
 int				SimulaComBaseNasOddsCasa	(modalidade *mod, int indexJogo);
 int				SimulaComBaseNasOddsFora	(modalidade *mod, int indexJogo);
