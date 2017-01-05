@@ -3,7 +3,7 @@
 
 int main(void) //Menu
 {
-	srand(SeedAleatoria());
+	srand(SeedAleatoria()); //srand(time(NULL));
 	char tecla_menu = 0;
 	modalidade modalidades[10];
 	int saldo, modalidadesCount;
@@ -70,7 +70,6 @@ int main(void) //Menu
 /* 
 FALTA:
 
-ESTA A CALCULAR 9 POSIcOES PARA O POISSONFORA
 CERTIFICAR QUE SO PODE JOGAR SE TIVER SALDO		xxxxxxxxxxxxxxxx
 LISTA MODALIDADE DECENTEMENTE					xxxxxxxxxxxxxxxx
 LISTAR RESULTADOS								xxxxxxxxxxxxxxxx
