@@ -70,6 +70,7 @@ int main(void) //Menu
 /* 
 FALTA:
 
+ESTA A CALCULAR 9 POSIcOES PARA O POISSONFORA
 CERTIFICAR QUE SO PODE JOGAR SE TIVER SALDO		xxxxxxxxxxxxxxxx
 LISTA MODALIDADE DECENTEMENTE					xxxxxxxxxxxxxxxx
 LISTAR RESULTADOS								xxxxxxxxxxxxxxxx

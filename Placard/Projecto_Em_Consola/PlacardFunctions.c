@@ -282,11 +282,11 @@ void FicheiroLeData(modalidade *mod, int *quantidadeMods, int *saldo)	//Le os fi
 					{
 						for (int x = 0; x < mod[i].listaJogosCount; x++)
 						{
-							for (int z = 0; z < mod[i].maxpts; z++)
+							for (int z = 0; z <= mod[i].maxpts; z++)
 							{
 								fscanf(fPoisson, "%f ", &mod[i].listaJogos[x].PoissonCasa[z]);
 							}
-							for (int z = 0; z < mod[0].maxpts; z++)
+							for (int z = 0; z <= mod[i].maxpts; z++)
 							{
 								fscanf(fPoisson, "%f ", &mod[i].listaJogos[x].PoissonFora[z]);
 							}
@@ -485,11 +485,11 @@ void Poisson(modalidade *mod)
 	fPoisson = fopen(nomeFicheiro, "w");
 	for (int i = 0; i < mod[0].listaJogosCount; i++)
 	{
-		for (int j = 0; j < mod[0].maxpts; j++)
+		for (int j = 0; j <= mod[0].maxpts; j++)
 		{
 			fprintf(fPoisson, "%f ", mod[0].listaJogos[i].PoissonCasa[j]);
 		}
-		for (int j = 0; j < mod[0].maxpts; j++)
+		for (int j = 0; j <= mod[0].maxpts; j++)
 		{
 			fprintf(fPoisson, "%f ", mod[0].listaJogos[i].PoissonFora[j]);
 		}
@@ -1411,4 +1411,3 @@ void ListarTudo(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha d
 
 	} while (opcao != '0');
 }
-
