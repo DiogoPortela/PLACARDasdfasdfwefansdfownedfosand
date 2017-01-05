@@ -1,0 +1,4 @@
+BASQUETEBOL 10 4.750000 5.650000
+FUTEBOL 6 3.558824 3.624183
+GOLF 6 -nan(ind) -nan(ind)
+TENIS 6 -nan(ind) -nan(ind)
