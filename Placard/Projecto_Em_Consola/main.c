@@ -60,7 +60,19 @@ int main(void) //Menu
 			printf("INTRODUZA UM VALOR VALIDO.\n");
 			break;
 		}
+
 		LimpaEcra();
 	} while (tecla_menu != '0');
 	return 0;
 }
+
+
+/* 
+FALTA:
+
+CERTIFICAR QUE SO PODE JOGAR SE TIVER SALDO		xxxxxxxxxxxxxxxx
+LISTA MODALIDADE DECENTEMENTE					xxxxxxxxxxxxxxxx
+LISTAR RESULTADOS								xxxxxxxxxxxxxxxx
+ALTERAR COTA SINGULAR							xxxxxxxxxxxxxxxx
+CORRIR 0 NO GEREJOGO
+*/

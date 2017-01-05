@@ -118,8 +118,9 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 
 	do
 	{
-		printf("SELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
-		printf("\t\tCASA\t\tVISITANTE\tODD CASA\tODD EMPATE\tODD VISITANTE\n");
+		opcao = -1;
+		printf("-----------------------------------\nSELECCIONE O JOGO NO QUAL PRETENDE APOSTAR:\n\n");
+		printf("\t     CASA\t   VISITANTE\tODD CASA\tODD EMPATE\tODD VISITANTE\n");
 		//Imprime alguns jogos escolhidos aleatoriamente
 
 		int numerosUsados[5] = { 0 }, flag;
@@ -146,13 +147,17 @@ int EscolheJogo(modalidade *mod)	//Da ao utilizador a escolha de um jogo entre v
 		}
 
 		//Le o input do utilizador e retorna o jogo escolhido
-		printf("0- CANCELAR\n\nOPCAO: ");
+		printf("\n0-CANCELAR\n\nOPCAO: ");
 		scanf("%d", &opcao);
 		while (getchar() != '\n');
 
 		if (opcao > 0 && opcao <= 5)
 		{
 			return numerosUsados[opcao - 1];
+		}
+		else if (opcao != 0)
+		{
+			printf("INTRODUZA UM VALOR VALIDO.\n");
 		}
 
 	} while (opcao != 0);
@@ -165,6 +170,7 @@ int EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizador a esc
 
 	do
 	{
+		opcao = -1;
 		system("cls");
 		//Imprime todas as modalidades
 		printf("MODALIDADE DA APOSTA:\n");
@@ -173,19 +179,24 @@ int EscolheModalidade(modalidade *mod, int *quantidade)	//Da ao utilizador a esc
 			printf("\t%d- %s \n", i + 1, mod[i].nome);
 		}
 
-		printf("\t0- VOLTAR ATRAS\n");
-		printf("OPCAO: ");
+		printf("\t0- SAIR\n");
+		printf("\nOPCAO: ");
 		scanf("%d", &opcao);
 		while (getchar() != '\n');
+		printf("\n");
 
 		//Verifica se o input esta dentro dos limites e guarda a modalidade escolhida
 		if (opcao > 0 && opcao <= *quantidade)
 		{
 			return opcao - 1;
 		}
+		else if (opcao != 0)
+		{
+			printf("INTRODUZA UM VALOR VALIDO.\n");
+			LimpaEcra();
+		}
 	} while (opcao != 0);
 
-	LimpaEcra();
 	return -1;
 }
 long factorial(int n)
@@ -550,10 +561,11 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 	char input, input2, input3, YN;
 	char nomeFicheiro[200], nomeFicheiroJogos[200], nomeFicheiroClubes[200], nomeFicheiroJogos2[200], nomeFicheiroClubes2[200], nomeFicheiroPoisson[200], nomeFicheiroPoisson2[200], charAux[50];
 	int inputInt, inputInt2;
-	system("cls");
 	do
 	{
 		//Imprime as escolhas e le input
+		input = -1;
+		system("cls");
 		printf("\t1- ALTERAR MODALIDADES\n\t2- ALTERAR CLUBES\n\t3- ALTERAR COTAS\n\t0- SAIR\n\nOPCAO: ");
 		scanf("%c", &input);
 		while (getchar() != '\n');
@@ -565,6 +577,7 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 			do
 			{
 				//Imprime escolhas e le input
+				input2 = -1;
 				system("cls");
 				printf("\t\t1- CRIAR MODALIDADE\n\t\t2- ALTERAR MODALIDADE\n\t\t3- ELIMINAR MODALIDADE\n\t\t0- CANCELAR\n\nOPCAO: ");
 				scanf("%c", &input2);
@@ -810,6 +823,7 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 			clube clubeAux, clubeAux2;
 			do
 			{
+				inputInt = -1;
 				//Imprime todas a modalidades e le input
 				system("cls");
 				printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
@@ -826,6 +840,7 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 				{
 					do
 					{
+						input3 = -1;
 						system("cls");
 						printf("\t\t\t1- CRIAR CLUBE\n\t\t\t2- ALTERAR CLUBE\n\t\t\t3- ELIMINAR CLUBE\n\t\t\t0- SAIR\nOPCAO: ");
 						scanf("%c", &input3);
@@ -1021,15 +1036,16 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 						case '0':
 							break;
 						default:
-							printf("VALOR INTRODUZIDO INVALIDO\n");
+							printf("INTRODUZA UM VALOR VALIDO.\n");
 							break;
 						}
 						LimpaEcra();
 					} while (input3 != '0');
 				}
-				else if (inputInt > *quantidade)
+				else if (inputInt != 0)
 				{
-					printf("VALOR INTRODUZIDO INVALIDO\n");
+					printf("INTRODUZA UM VALOR VALIDO.\n");
+					LimpaEcra();
 				}
 			} while (inputInt != 0);
 			LimpaEcra();
@@ -1037,112 +1053,146 @@ void Definicoes(modalidade *mod, int *quantidade)	//Da ao utilizador as definiço
 		}
 		case '3':	//Alterar Cotas
 		{
-			system("cls");
-			printf("ESCOLHA A MODALIDADE:\n");
-			for (int i = 0; i < *quantidade; i++)
+			do
 			{
-				printf("\t\t%d- %s\n", i + 1, mod[i]);
-			}
-			printf("\t\t0- SAIR\nOPCAO: ");
-			scanf("%d", &inputInt);
-			while (getchar() != '\n');
-
-			if (inputInt > 0 && inputInt < quantidade)
-			{
-				printf("\t\t1- RECALCULAR COTAS\n\t\t2- ALTERAR COTA INDIVIDUAL\n\t\t0- SAIR\n\nOPCAO: ");
-				scanf("%c", &input2);
+				inputInt = -1;
+				system("cls");
+				printf("ESCOLHA A MODALIDADE:\n");
+				for (int i = 0; i < *quantidade; i++)
+				{
+					printf("\t\t%d- %s\n", i + 1, mod[i]);
+				}
+				printf("\t\t0- SAIR\nOPCAO: ");
+				scanf("%d", &inputInt);
 				while (getchar() != '\n');
 
-				switch (input2)
+				if (inputInt > 0 && inputInt < quantidade)
 				{
-				case '1':
-				{
-					//Apaga o ficheiro
-					strcpy(nomeFicheiro, mod[inputInt - 1].nome);
-					strcat(nomeFicheiro, "-resultados.txt");
-					remove(nomeFicheiro);
+					do
+					{
+						input2 = -1;
+						printf("\t\t1- RECALCULAR COTAS\n\t\t0- SAIR\n\nOPCAO: ");
+						scanf("%c", &input2);
+						while (getchar() != '\n');
 
-					AtribuiResultado(&mod[inputInt - 1]);
-					CalculaMediaGolos(mod, inputInt - 1, quantidade);
-					CalculaAtteDef(&mod[inputInt - 1]);
-					Poisson(&mod[inputInt - 1]);
-					CalculaOddsIniciais(&mod[inputInt - 1]);
-					CriaJogos(&mod[inputInt - 1]);
-					break;
-				}
-				case '2':
-				{
-					break;
-				}
-				case '0':
-				{
-					break;
-				}
-				default:
-					printf("INTRODUZA UM VALOR VALIDO");
-					break;
-				}
-				LimpaEcra();
-				break;
-			}
+						switch (input2)
+						{
+						case '1':
+						{
+							//Apaga o ficheiro
+							strcpy(nomeFicheiro, mod[inputInt - 1].nome);
+							strcat(nomeFicheiro, "-resultados.txt");
+							remove(nomeFicheiro);
 
+							AtribuiResultado(&mod[inputInt - 1]);
+							CalculaMediaGolos(mod, inputInt - 1, quantidade);
+							CalculaAtteDef(&mod[inputInt - 1]);
+							Poisson(&mod[inputInt - 1]);
+							CalculaOddsIniciais(&mod[inputInt - 1]);
+							CriaJogos(&mod[inputInt - 1]);
+
+							LimpaEcra();
+							break;
+						}
+						case '0':
+						{
+							break;
+						}
+						default:
+							printf("INTRODUZA UM VALOR VALIDO.\n");
+							LimpaEcra();
+							break;
+						}
+					} while (input2 != '0');
+				}
+				else if (inputInt != 0)
+				{
+					printf("INTRODUZA UM VALOR VALIDO.\n");
+					LimpaEcra();
+				}
+			} while (inputInt != 0);
 		}
+		default:
+			printf("INTRODUZA UM VALOR VALIDO.\n");
+			LimpaEcra();
 		}
 	} while (input != '0');
 }
 void GereJogo(modalidade *mod, int *quantidade, int *saldo)
 {
 	FILE *fSaldoEscrita;
-	int indexModalidade, indexJogo, valorAposta, intAux;
+	int indexModalidade, indexJogo, valorAposta = 0, intAux;
 	char charAux;
 
 	indexModalidade = EscolheModalidade(mod, quantidade);
+	if (indexModalidade < 0)
+	{
+		return;
+	}
+
 	indexJogo = EscolheJogo(&mod[indexModalidade]);
 
-	do
+	if (indexJogo < 0)
 	{
-		printf("EM QUE PRETENDE APOSTAR?");
-		printf("\t1- VITORIA %s", mod[indexModalidade].listaJogos[indexJogo].casa);
-		printf("\t2- EMPATE");
-		printf("\t3- VITORIA %s", mod[indexModalidade].listaJogos[indexJogo].visitante);
-		printf("\n\nOPCAO: ");
-		scanf("%d", &intAux);
-		while (getchar() != '\n');
-	} while (intAux < 1 || intAux > 3);
-
-	do
-	{
-		printf("QUANTIDADE A APOSTAR (1-100): ");
-		scanf("%d", &valorAposta);
-		while (getchar() != '\n');
-	} while (valorAposta <= 0 || valorAposta > 100);
-
-	charAux = AtribuiResultadoComOdds(&mod[indexModalidade], indexJogo);
-
-	if (charAux == 'V' && intAux == 1)
-	{
-		*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddCasa;
-		printf("\nGANHOU! SALDO: %d", *saldo);
+		return;
 	}
-	else if (charAux == 'E' && intAux == 2)
+	if (*saldo > 0)
 	{
-		*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddEmpate;
-		printf("\nGANHOU! SALDO: %d", *saldo);
-	}
-	else if (charAux == 'D' && intAux == 3)
-	{
-		*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddVisitante;
-		printf("\nGANHOU! SALDO: %d", *saldo);
+		do
+		{
+			intAux = -1;
+			printf("\nEM QUE PRETENDE APOSTAR?");
+			printf("\n1- VITORIA %s", mod[indexModalidade].listaJogos[indexJogo].casa);
+			printf("\n2- EMPATE");
+			printf("\n3- VITORIA %s", mod[indexModalidade].listaJogos[indexJogo].visitante);
+			printf("\n\nOPCAO: ");
+			scanf("%d", &intAux);
+			while (getchar() != '\n');
+		} while (intAux < 1 || intAux > 3);
+
+		do
+		{
+			if (valorAposta > *saldo)
+			{
+				printf("\nNAO TEM SALDO SUFICIENTE PARA APOSTAR.");
+			}
+
+			printf("\nQUANTIDADE A APOSTAR (1-100): ");
+			scanf("%d", &valorAposta);
+			while (getchar() != '\n');
+		} while (valorAposta <= 0 || valorAposta > 100 || valorAposta > *saldo);
+
+		charAux = AtribuiResultadoComOdds(&mod[indexModalidade], indexJogo);
+
+		if (charAux == 'V' && intAux == 1)
+		{
+			*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddCasa;
+			printf("\nGANHOU! SALDO: %d", *saldo);
+		}
+		else if (charAux == 'E' && intAux == 2)
+		{
+			*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddEmpate;
+			printf("\nGANHOU! SALDO: %d", *saldo);
+		}
+		else if (charAux == 'D' && intAux == 3)
+		{
+			*saldo += valorAposta * mod[indexModalidade].listaJogos[indexJogo].oddVisitante;
+			printf("\nGANHOU! SALDO: %d", *saldo);
+		}
+		else
+		{
+			*saldo -= valorAposta;
+			printf("\nPERDEU! SALDO: %d", *saldo);
+		}
+
+		fSaldoEscrita = fopen("saldo.txt", "w");
+		fprintf(fSaldoEscrita, "%d", *saldo);
+		fclose(fSaldoEscrita);
 	}
 	else
 	{
-		*saldo -= valorAposta;
-		printf("\nPERDEU! SALDO: %d", *saldo);
+		printf("CARREGE O SEU SALDO PARA PODER JOGAR.");
 	}
-
-	fSaldoEscrita = fopen("saldo.txt", "w");
-	fprintf(fSaldoEscrita, "%d", *saldo);
-	fclose(fSaldoEscrita);
 }
 void GerirSaldo(int *saldo)	//Da ao utilizador o seu saldo e permite carrega-lo
 {
@@ -1172,6 +1222,7 @@ void GerirSaldo(int *saldo)	//Da ao utilizador o seu saldo e permite carrega-lo
 			fscanf(fSaldoLeitura, "%d", saldo);
 			do
 			{
+				userInput = -1;
 				printf("O SEU SALDO ACTUAL: %d\n1- CARREGAR\n0- SAIR\n\nOPCAO: ", *saldo);
 				scanf("%d", &userInput);
 				while (getchar() != '\n');
@@ -1191,7 +1242,7 @@ void GerirSaldo(int *saldo)	//Da ao utilizador o seu saldo e permite carrega-lo
 					}
 					else
 					{
-						printf("VALOR INTRODUZIDO INVALIDO.");
+						printf("INTRODUZA UM VALOR VALIDO.\n");
 					}
 					LimpaEcra();
 					break;
@@ -1201,7 +1252,7 @@ void GerirSaldo(int *saldo)	//Da ao utilizador o seu saldo e permite carrega-lo
 					break;
 				}
 				default:
-					printf("INTRODUZA UM VALOR VALIDO.");
+					printf("INTRODUZA UM VALOR VALIDO.\n");
 					LimpaEcra();
 					break;
 				}
@@ -1212,17 +1263,19 @@ void GerirSaldo(int *saldo)	//Da ao utilizador o seu saldo e permite carrega-lo
 }
 void ListarTudo(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha do que pretende ver listado, modalidades, clubes, jogos e resultados
 {
+	FILE *fResultados;
 	char opcao = 0, nomeFicheiro[200];
 	int inputInt;
 	system("cls");
 	do
 	{
+		opcao = -1;
 		printf("\t1- LISTAR MODALIDADES.\n");
 		printf("\t2- LISTAR CLUBES.\n");
 		printf("\t3- LISTAR JOGOS.\n");
 		printf("\t4- LISTAR RESULTADOS.\n");
 		printf("\t0- SAIR.\n");
-		printf("OPCAO: ");
+		printf("\nOPCAO: ");
 		scanf("%c", &opcao);
 		while (getchar() != '\n');
 
@@ -1230,60 +1283,122 @@ void ListarTudo(modalidade *mod, int *quantidade)	//Da ao utilizador a escolha d
 		{
 		case '1':	//Imprimir modalidades
 		{
-			FicheiroImprimir("modalidades.txt");
+			for (int i = 0; i < *quantidade; i++)
+			{
+					printf("\n%s", mod[i].nome);
+			}
+			printf("\n");
 			LimpaEcra();
 			break;
 		}
 		case'2':	//Imprimir clubes
 		{
 			//Imprime todas a modalidades e escolhe uma
-			system("cls");
-			printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
-			for (int i = 0; i < *quantidade; i++)
+			do
 			{
-				printf("\t\t%d- %s\n", i + 1, mod[i]);
-			}
-			printf("\t\t0- SAIR\nOPCAO: ");
-			scanf("%d", &inputInt);
-			while (getchar() != '\n');
+				inputInt = -1;
+				system("cls");
+				printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
+				for (int i = 0; i < *quantidade; i++)
+				{
+					printf("\t\t%d- %s\n", i + 1, mod[i]);
+				}
+				printf("\t\t0- SAIR\nOPCAO: ");
+				scanf("%d", &inputInt);
+				while (getchar() != '\n');
 
-			//Imprime todos os clubes
+				//Imprime todos os clubes
+				if (inputInt > 0 && inputInt <= *quantidade)
+				{
+					for (int i = 0; i < mod[inputInt - 1].listaClubesCount; i++)
+					{
+						printf("\n%s", mod[inputInt - 1].listaClubes[i].nome);
+					}
+				}
+				else if (inputInt != 0)
+				{
+					printf("INTRODUZA UM VALOR VALIDO.\n");
+				}
 
-			for (int i = 0; i < mod[inputInt - 1].listaClubesCount; i++)
-			{
-				printf("\n%s", mod[inputInt - 1].listaClubes[i].nome);
-			}
-
-			printf("\n");
-			LimpaEcra();
+				printf("\n");
+				LimpaEcra();
+			} while (inputInt != 0);
 			break;
 		}
 		case '3':	//Imprimir jogos
 		{
 			//Imprime todas a modalidades e escolhe uma
-			system("cls");
-			printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
-			for (int i = 0; i < *quantidade; i++)
+			do
 			{
-				printf("\t\t%d- %s\n", i + 1, mod[i]);
-			}
-			printf("\t\t0- SAIR\nOPCAO: ");
-			scanf("%d", &inputInt);
-			while (getchar() != '\n');
+				inputInt = -1;
+				system("cls");
+				printf("ESCOLHA A MODALIDADE DO CLUBE:\n");
+				for (int i = 0; i < *quantidade; i++)
+				{
+					printf("\t\t%d- %s\n", i + 1, mod[i]);
+				}
+				printf("\t\t0- SAIR\nOPCAO: ");
+				scanf("%d", &inputInt);
+				while (getchar() != '\n');
 
-			//Imprime todos os jogos
-
-			for (int i = 0; i < mod[inputInt - 1].listaJogosCount; i++)
-			{
-				printf("\n%s - %s", (*mod[inputInt - 1].listaJogos[i].casa).nome, (*mod[inputInt - 1].listaJogos[i].visitante).nome);
-			}
-
-			printf("\n");
-			LimpaEcra();
+				//Imprime todos os jogos
+				if (inputInt > 0 && inputInt <= *quantidade)
+				{
+					for (int i = 0; i < mod[inputInt - 1].listaJogosCount; i++)
+					{
+						printf("\n%s - %s", (*mod[inputInt - 1].listaJogos[i].casa).nome, (*mod[inputInt - 1].listaJogos[i].visitante).nome);
+					}
+				}
+				else if (inputInt != 0)
+				{
+					printf("INTRODUZA UM VALOR VALIDO.\n");
+				}				
+				printf("\n");
+				LimpaEcra();
+			} while (inputInt != 0);			
 			break;
 		}
 		case '4':	//Imprimir resultados
-			FicheiroImprimir("resultados.txt");
+			do
+			{
+				inputInt = -1;
+				system("cls");
+				printf("ESCOLHA A MODALIDADE DOS RESULTADOS:\n");
+				for (int i = 0; i < *quantidade; i++)
+				{
+					printf("\t\t%d- %s\n", i + 1, mod[i]);
+				}
+				printf("\t\t0- SAIR\nOPCAO: ");
+				scanf("%d", &inputInt);
+				while (getchar() != '\n');
+
+				//Imprime todos os resultados
+				if (inputInt > 0 && inputInt <= *quantidade)
+				{
+					char charAux1[100], charAux2[100];
+					int intAux1, intAux2;
+
+					strcpy(nomeFicheiro, mod[inputInt - 1].nome);
+					strcat(nomeFicheiro, "-resultados.txt");
+					if (FicheiroExiste(nomeFicheiro, &fResultados))
+					{
+						for (int i = 0; i < FicheiroLinhas(nomeFicheiro); i++)
+						{
+							fscanf(fResultados, "%s %d - %d %s", charAux1, &intAux1, &intAux2, charAux2);
+							printf("\n%s %d - %d %s", charAux1, intAux1, intAux2, charAux2);
+						}
+						fclose(fResultados);
+					}
+					printf("\n");
+					LimpaEcra();
+				}
+				else if (inputInt != 0)
+				{
+					printf("INTRODUZA UM VALOR VALIDO.\n");
+					LimpaEcra();
+				}
+				printf("\n");
+			} while (inputInt != 0);
 			LimpaEcra();
 			break;
 		case '0':
